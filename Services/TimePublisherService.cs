@@ -38,11 +38,17 @@ namespace VersionOne.ServiceHost.Core.Services
 				_timer.Enabled = false;			
 		}
 
+		private bool _busy = false;
+
 		void Timer_Elapsed(object sender, ElapsedEventArgs e)
 		{
+			if (_busy)
+				return;
+			_busy = true;
 			object pub = Activator.CreateInstance(_publishtype);
 			LogMessage.Log(LogMessage.SeverityType.Debug,string.Format("Timer Elapsed {0} {1} {2}",_interval,_publishtype.Name, e.SignalTime),_eventmanager);
 			_eventmanager.Publish(pub);
+			_busy = false;
 		}
 	}
 }

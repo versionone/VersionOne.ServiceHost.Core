@@ -61,6 +61,7 @@
     <Compile Include="Services\V1WriterServiceBase.cs" />
     <Compile Include="Utility\FileSys.cs" />
     <Compile Include="Utility\FolderMonitor.cs" />
+    <Compile Include="Utility\Reg.cs" />
     <Compile Include="Utility\System.HashCode.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

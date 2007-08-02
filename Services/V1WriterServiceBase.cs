@@ -8,7 +8,7 @@ using VersionOne.Profile;
 
 namespace VersionOne.ServiceHost.Core.Services
 {
-	public class V1WriterServiceBase
+	public abstract class V1WriterServiceBase
 	{
 		private ICentral _central;
 		protected XmlElement _config;
@@ -33,6 +33,23 @@ namespace VersionOne.ServiceHost.Core.Services
 			_config = config;
 			_eventmanager = eventmanager;
 		}
+
+		protected abstract NeededAssetType[] NeededAssetTypes { get; }
+
+		protected void VerifyMeta()
+		{
+			try
+			{
+				VerifyNeededMeta(NeededAssetTypes);
+				VerifyRuntimeMeta();
+			}
+			catch (MetaException e)
+			{
+				throw new ApplicationException("Necessary meta is not present in this VersionOne system", e);
+			}
+		}
+
+		protected virtual void VerifyRuntimeMeta() { }
 
 		protected struct NeededAssetType
 		{
