@@ -30,6 +30,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.DirectoryServices" />
     <Reference Include="System.Xml" />
     <Reference Include="VersionOne.APIClient, Version=6.4.23.0, Culture=neutral, PublicKeyToken=e0f410c10d2e7630">
       <SpecificVersion>False</SpecificVersion>
@@ -61,6 +62,7 @@
     <Compile Include="Services\V1WriterServiceBase.cs" />
     <Compile Include="Utility\FileSys.cs" />
     <Compile Include="Utility\FolderMonitor.cs" />
+    <Compile Include="Utility\IIS.cs" />
     <Compile Include="Utility\Reg.cs" />
     <Compile Include="Utility\System.HashCode.cs" />
   </ItemGroup>
