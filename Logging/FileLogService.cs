@@ -23,12 +23,13 @@ namespace VersionOne.ServiceHost.Logging
 			if (_writer != null)
 			{
 				_writer.WriteLine(string.Format("[{0}] {2} {1}",message.Severity, message.Message, message.Stamp));
-				if (message.Exception != null)
+				string prefix = string.Format("[Exception] {0} ", message.Stamp);
+				Exception ex = message.Exception;
+				while (ex != null)
 				{
-					string prefix = string.Format("[Exception] {0} ", message.Stamp);
-					string extracontent = AdditionalExceptionContent(message.Exception);
-					_writer.WriteLine(prefix + string.Empty);
-					_writer.WriteLine(prefix + message.Exception.Message);
+					_writer.WriteLine(prefix);
+					_writer.WriteLine(prefix + ex.Message);
+					string extracontent = AdditionalExceptionContent(ex);
 					if (!string.IsNullOrEmpty(extracontent))
 					{
 						_writer.WriteLine(_minorsep);
@@ -36,8 +37,10 @@ namespace VersionOne.ServiceHost.Logging
 						_writer.WriteLine(_minorsep);
 					}
 					_writer.WriteLine(_minorsep);
-					_writer.WriteLine(message.Exception.StackTrace);
+					_writer.WriteLine(ex.StackTrace);
 					_writer.WriteLine(_minorsep);
+
+					ex = ex.InnerException;
 				}
 			}
 		}

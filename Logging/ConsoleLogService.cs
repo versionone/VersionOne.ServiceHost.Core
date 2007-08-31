@@ -11,8 +11,12 @@ namespace VersionOne.ServiceHost.Logging
 				return;
 #endif
 			Console.WriteLine(string.Format("[{0}] {1}", msg.Severity, msg.Message));
-			if (msg.Exception != null)
-				Console.WriteLine(string.Format("[{0}] Exception: {1}", msg.Severity, msg.Exception.Message));
+			Exception ex = msg.Exception;
+			while (ex != null)
+			{
+				Console.WriteLine(string.Format("[{0}] Exception: {1}", msg.Severity, ex.Message));
+				ex = ex.InnerException;
+			}
 		}
 
 		protected override void Startup()
