@@ -56,13 +56,8 @@ namespace VersionOne.IIS
 		protected T Create<T>(string name, string type) where T : IISObject
 		{
 			using (DirectoryEntry entry = new DirectoryEntry(_path))
-			{
-				if (entry.Children.Find(name, type) == null)
-				{
-					DirectoryEntry e = entry.Children.Add(name, type);
+				using (DirectoryEntry e = entry.Children.Add(name, type))
 					e.CommitChanges();
-				}
-			}
 			return GetChild<T>(name);
 		}
 
