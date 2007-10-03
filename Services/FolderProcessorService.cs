@@ -14,10 +14,10 @@ namespace VersionOne.ServiceHost.Core
 
 		protected IEventManager EventManager { get { return _eventmanager; } }
 		
-		public void Initialize(XmlElement config, IEventManager eventmanager, IProfile profile)
+		public void Initialize(XmlElement config, IEventManager eventManager, IProfile profile)
 		{
 			_monitor = new FolderMonitor(profile, config["Watch"].InnerText, config["Filter"].InnerText, Process);
-			_eventmanager = eventmanager;			
+			_eventmanager = eventManager;			
 			_eventmanager.Subscribe(EventSinkType, _monitor.ProcessFolder);
 		}
 

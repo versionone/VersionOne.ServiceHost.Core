@@ -11,10 +11,10 @@ namespace VersionOne.ServiceHost.Logging
 {
 	public abstract class BaseLogService : IHostedService
 	{
-		public virtual void Initialize(XmlElement config, IEventManager eventmanager, IProfile profile)
+		public virtual void Initialize(XmlElement config, IEventManager eventManager, IProfile profile)
 		{
-			eventmanager.Subscribe(typeof(LogMessage), LogMessageListener);
-			eventmanager.Subscribe(typeof(ServiceHostState),ServiceHostStateListener);
+			eventManager.Subscribe(typeof(LogMessage), LogMessageListener);
+			eventManager.Subscribe(typeof(ServiceHostState),ServiceHostStateListener);
 		}
 
 		private void LogMessageListener(object pubobj)

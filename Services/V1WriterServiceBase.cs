@@ -13,7 +13,7 @@ namespace VersionOne.ServiceHost.Core.Services
 	{
 		private ICentral _central;
 		protected XmlElement _config;
-		protected IEventManager _eventmanager;
+		protected IEventManager _eventManager;
 
 		protected virtual ICentral Central
 		{
@@ -29,10 +29,10 @@ namespace VersionOne.ServiceHost.Core.Services
 			}
 		}
 
-		public virtual void Initialize (XmlElement config, IEventManager eventmanager, IProfile profile)
+		public virtual void Initialize (XmlElement config, IEventManager eventManager, IProfile profile)
 		{
 			_config = config;
-			_eventmanager = eventmanager;
+			_eventManager = eventManager;
 		}
 
 		protected abstract NeededAssetType[] NeededAssetTypes { get; }

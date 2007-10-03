@@ -45,11 +45,11 @@ namespace VersionOne.ServiceHost.Logging
 			}
 		}
 
-		public override void Initialize(XmlElement config, IEventManager eventmanager, IProfile profile)
+		public override void Initialize(XmlElement config, IEventManager eventManager, IProfile profile)
 		{
 			_filename = config["LogFile"].InnerText;
 			
-			base.Initialize(config,eventmanager,profile);
+			base.Initialize(config,eventManager,profile);
 
 			string folder = Path.GetDirectoryName(_filename);
 			if (!Directory.Exists(folder))

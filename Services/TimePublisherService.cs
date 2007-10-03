@@ -15,13 +15,13 @@ namespace VersionOne.ServiceHost.Core.Services
 		private IEventManager _eventmanager;
 		private Timer _timer;
 
-		public void Initialize(XmlElement config, IEventManager eventmanager, IProfile profile)
+		public void Initialize(XmlElement config, IEventManager eventManager, IProfile profile)
 		{
 			if (!double.TryParse(config["Interval"].InnerText, out _interval))
 				_interval = -1;
 			_publishtype = Type.GetType(config["PublishClass"].InnerText);
 			
-			_eventmanager = eventmanager;
+			_eventmanager = eventManager;
 			_eventmanager.Subscribe(typeof(ServiceHostState),HostStateChanged);
 
 			_timer = new Timer(_interval);
