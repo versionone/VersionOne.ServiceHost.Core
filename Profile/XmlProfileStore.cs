@@ -114,7 +114,7 @@ namespace VersionOne.Profile
 				}
 				catch
 #if DEBUG
-					(Exception e)
+					(Exception)
 #endif
 				{
 					batch.DiscardChanges();
