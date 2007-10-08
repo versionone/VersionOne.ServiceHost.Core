@@ -8,6 +8,11 @@ using VersionOne.ServiceHost.Logging;
 
 namespace VersionOne.ServiceHost.Core.Services
 {
+	/// <summary>
+	/// A service that raises an event on an interval basis.
+	/// Although the Timer could cause reentrancy, our timer is protected
+	/// against that.
+	/// </summary>
 	public class TimePublisherService : IHostedService
 	{
 		private double _interval = 0;
@@ -38,17 +43,26 @@ namespace VersionOne.ServiceHost.Core.Services
 				_timer.Enabled = false;			
 		}
 
+		// Prevents reentrancy into event handlers.
 		private bool _busy = false;
 
+		/// <summary>
+		/// Timer event that publishes the configured event.
+		/// </summary>
+		/// <param name="sender">Not used.</param>
+		/// <param name="e">The timer event.</param>
+		/// <remarks>If the previous event has not returned, we skip the current interval.</remarks>
 		void Timer_Elapsed(object sender, ElapsedEventArgs e)
 		{
-			if (_busy)
-				return;
-			_busy = true;
-			object pub = Activator.CreateInstance(_publishtype);
-			LogMessage.Log(LogMessage.SeverityType.Debug,string.Format("Timer Elapsed {0} {1} {2}",_interval,_publishtype.Name, e.SignalTime),_eventmanager);
-			_eventmanager.Publish(pub);
-			_busy = false;
+			// The check-and-set of _busy is not thread-safe, but that shouldn't matter unless the inverval is set unreasonably small.
+			if (!_busy)
+			{
+				_busy = true;
+				object pub = Activator.CreateInstance(_publishtype);
+				LogMessage.Log(LogMessage.SeverityType.Debug, string.Format("Timer Elapsed {0} {1} {2}", _interval, _publishtype.Name, e.SignalTime), _eventmanager);
+				_eventmanager.Publish(pub);
+				_busy = false;
+			}
 		}
 	}
 }
