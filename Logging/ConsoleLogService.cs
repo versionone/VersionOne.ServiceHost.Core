@@ -4,18 +4,39 @@ namespace VersionOne.ServiceHost.Logging
 {
 	public class ConsoleLogService : BaseLogService
 	{
+		private LogMessage.SeverityType _severity = LogMessage.SeverityType.Info;
+
 		protected override void Log(LogMessage msg)
 		{
-#if !DEBUG
-			if (msg.Severity == LogMessage.SeverityType.Debug)
-				return;
-#endif
-			Console.WriteLine(string.Format("[{0}] {1}", msg.Severity, msg.Message));
-			Exception ex = msg.Exception;
-			while (ex != null)
+			if (msg.Severity >= _severity)
 			{
-				Console.WriteLine(string.Format("[{0}] Exception: {1}", msg.Severity, ex.Message));
-				ex = ex.InnerException;
+				Console.WriteLine(string.Format("[{0}] {1}", msg.Severity, msg.Message));
+				Exception ex = msg.Exception;
+				while (ex != null)
+				{
+					Console.WriteLine(string.Format("[{0}] Exception: {1}", msg.Severity, ex.Message));
+					ex = ex.InnerException;
+				}
+			}
+		}
+
+		public override void Initialize(System.Xml.XmlElement config, VersionOne.ServiceHost.Eventing.IEventManager eventManager, VersionOne.Profile.IProfile profile)
+		{
+			base.Initialize(config, eventManager, profile);
+
+			if (config["LogLevel"] != null && ! string.IsNullOrEmpty(config["LogLevel"].InnerText))
+			{
+				string logLevel = config["LogLevel"].InnerText;
+
+				try
+				{
+					_severity = (LogMessage.SeverityType) Enum.Parse(typeof(LogMessage.SeverityType), logLevel, true);
+				}
+				catch (Exception ex)
+				{
+					Console.WriteLine( "Couldn't parse LogLevel '{0}'. Try Debug, Info, or Error.");
+				}
+
 			}
 		}
 
