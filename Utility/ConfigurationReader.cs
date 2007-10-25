@@ -1,7 +1,5 @@
 using System;
-using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
 using System.Xml;
 
 namespace VersionOne.ServiceHost.Core.Utility
@@ -42,7 +40,7 @@ namespace VersionOne.ServiceHost.Core.Utility
 						fieldInfo.SetValue(config, Read(configSection, tagName.Name, tagName.DefaultValue));
 					}
 
-					System.Diagnostics.Debug.WriteLine(string.Format("Set {0} to {1}.", fieldInfo.Name, fieldInfo.GetValue(config)));
+					System.Diagnostics.Debug.WriteLine(string.Format("Set '{0}' to '{1}'.", fieldInfo.Name, fieldInfo.GetValue(config)));
 				}
 				else
 				{
