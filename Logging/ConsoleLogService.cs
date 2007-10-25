@@ -32,7 +32,7 @@ namespace VersionOne.ServiceHost.Logging
 				{
 					_severity = (LogMessage.SeverityType) Enum.Parse(typeof(LogMessage.SeverityType), logLevel, true);
 				}
-				catch (Exception ex)
+				catch (Exception)
 				{
 					Console.WriteLine( "Couldn't parse LogLevel '{0}'. Try Debug, Info, or Error.");
 				}
