@@ -13,8 +13,6 @@ namespace VersionOne.ServiceHost.Core
 	{
 		private IProfile _profile;
 		private IProfile _processedPathsProfile;
-		private string _filterpattern;
-		private string _watchfolder;
 
 		private IProfile ProcessedPaths
 		{
@@ -26,18 +24,29 @@ namespace VersionOne.ServiceHost.Core
 			}
 		}
 
+		#region FilterPattern property
+		private string _filterPattern;
 		protected string FilterPattern
 		{
-			get { return _filterpattern; }
-			set { _filterpattern = value; }
+			get { return _filterPattern; }
+			set { _filterPattern = value; }
 		}
+		#endregion
 
+		#region WatchFolder property
+		private string _watchFolder;
 		protected string WatchFolder
 		{
-			get { return _watchfolder; }
-			set { _watchfolder = value; }
+			get { return _watchFolder; }
+			set { _watchFolder = value; }
 		}
+		#endregion
 
+		/// <summary>
+		/// Get the processed state of the given file from the profile.
+		/// </summary>
+		/// <param name="file">File to look up.</param>
+		/// <returns>True if processed. False if not processed. Null if not in profile.</returns>
 		protected bool? GetState(string file)
 		{
 			string value = ProcessedPaths[file].Value;
@@ -46,16 +55,21 @@ namespace VersionOne.ServiceHost.Core
 			return bool.Parse(value);
 		}
 
+		/// <summary>
+		/// Save the processing state for the given file to the profile.
+		/// </summary>
+		/// <param name="file">File in question.</param>
+		/// <param name="done">True if processed.</param>
 		protected void SaveState(string file, bool? done)
 		{
 			ProcessedPaths[file].Value = done == null ? null : done.ToString();
 		}
 
-		public FileSystemMonitor(IProfile profile, string watchfolder, string filterpattern)
+		public FileSystemMonitor(IProfile profile, string watchFolder, string filterPattern)
 		{
 			_profile = profile;
-			WatchFolder = watchfolder;
-			FilterPattern = filterpattern;
+			WatchFolder = watchFolder;
+			FilterPattern = filterPattern;
 			if (string.IsNullOrEmpty(FilterPattern))
 				FilterPattern = "*.*";
 
@@ -64,6 +78,10 @@ namespace VersionOne.ServiceHost.Core
 				Directory.CreateDirectory(path);
 		}
 
+		/// <summary>
+		/// Perform the basic processing pattern.
+		/// </summary>
+		/// <param name="path">A file or directory name, depending on the subclass implementation.</param>
 		protected void ProcessPath(string path)
 		{
 			if (GetState(path) == null)
@@ -105,8 +123,8 @@ namespace VersionOne.ServiceHost.Core
 	{
 		private ProcessFolderDelegate _processor;
 
-		public FolderMonitor(IProfile profile, string watchfolder, string filterpattern, ProcessFolderDelegate processor)
-			: base(profile, watchfolder, filterpattern)
+		public FolderMonitor(IProfile profile, string watchFolder, string filterPattern, ProcessFolderDelegate processor)
+			: base(profile, watchFolder, filterPattern)
 		{
 			_processor = processor;
 		}
@@ -128,7 +146,7 @@ namespace VersionOne.ServiceHost.Core
 	public class BatchFolderMonitor : FileSystemMonitor
 	{
 		private ProcessFolderBatchDelegate _processor;
-		public BatchFolderMonitor(IProfile profile, string watchfolder, string filterpattern, ProcessFolderBatchDelegate processor) : base(profile, watchfolder, filterpattern)
+		public BatchFolderMonitor(IProfile profile, string watchFolder, string filterPattern, ProcessFolderBatchDelegate processor) : base(profile, watchFolder, filterPattern)
 		{
 			_processor = processor;
 		}
