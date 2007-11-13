@@ -63,7 +63,7 @@ namespace VersionOne.ServiceHost.Core
 				InternalProcess(folders);
 				//LogMessage.Log(string.Format("Finished Processing Folder: {0}", folder), EventManager);
 			}
-			catch (Exception ex)
+			catch (Exception)
 			{
 				//LogMessage.Log(string.Format("Failed Processing Folder: {0}", folder), ex, EventManager);
 			}
