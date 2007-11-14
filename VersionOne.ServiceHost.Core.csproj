@@ -29,6 +29,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.DirectoryServices" />
     <Reference Include="System.Xml" />
@@ -44,6 +45,7 @@
     <Compile Include="..\VersionOne.ServiceHost\Properties\AssemblyInfoProduct.cs">
       <Link>Properties\AssemblyInfoProduct.cs</Link>
     </Compile>
+    <Compile Include="CommonMode.cs" />
     <Compile Include="Profile\XMLNormalizer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Eventing\EventManager.cs" />
@@ -56,6 +58,7 @@
     <Compile Include="Profile\XmlProfileStore.cs" />
     <Compile Include="Profile\VirtualNode.cs" />
     <Compile Include="ServiceHostState.cs" />
+    <Compile Include="ServicesConfigurationHandler.cs" />
     <Compile Include="Services\FolderBatchProcessorService.cs" />
     <Compile Include="Services\FolderProcessorService.cs" />
     <Compile Include="Services\IHostedService.cs" />

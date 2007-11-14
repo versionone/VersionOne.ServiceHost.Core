@@ -16,7 +16,7 @@ namespace VersionOne.ServiceHost.Core
 
 		protected IEventManager EventManager { get { return _eventManager; } }
 
-		public void Initialize(XmlElement config, IEventManager eventManager, IProfile profile)
+		public virtual void Initialize(XmlElement config, IEventManager eventManager, IProfile profile)
 		{
 			_folderFilterPattern = config["Filter"].InnerText;
 			_suiteName = config["SuiteName"].InnerText;
