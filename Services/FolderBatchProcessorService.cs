@@ -31,11 +31,12 @@ namespace VersionOne.ServiceHost.Core
 			{
 				LogMessage.Log(LogMessage.SeverityType.Debug, string.Format("Starting Processing {0} files: {1}", files.Length, string.Join(",", files)), EventManager);
 				InternalProcess(files, _suiteName);
-				LogMessage.Log( LogMessage.SeverityType.Debug, string.Format( "Finished Processing {0} files: {1}", string.Join( ",", files ) ), EventManager );
+				LogMessage.Log( LogMessage.SeverityType.Debug, string.Format( "Finished Processing {0} files: {1}", files.Length, string.Join( ",", files ) ), EventManager );
 			}
-			catch (Exception)
+			catch (Exception ex)
 			{
-				LogMessage.Log( LogMessage.SeverityType.Error, string.Format( "Failed Processing {0} files: {1}", files.Length, string.Join( ",", files ) ), EventManager );
+				string message = string.Format( "Failed Processing {0} files: {1}\n{2}", files.Length, string.Join( ",", files ), ex.ToString() );
+				LogMessage.Log( LogMessage.SeverityType.Error, message, EventManager );
 			}
 		}
 
