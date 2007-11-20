@@ -9,7 +9,7 @@ namespace VersionOne.ServiceHost.Core
 {
 	public abstract class FileProcessorService : IHostedService
 	{
-		private IEventManager _eventManager;		
+		private IEventManager _eventManager;
 		private FileMonitor _monitor;
 
 		protected IEventManager EventManager { get { return _eventManager; } }

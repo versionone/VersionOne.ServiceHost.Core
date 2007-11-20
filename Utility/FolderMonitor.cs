@@ -6,7 +6,8 @@ using VersionOne.Profile;
 namespace VersionOne.ServiceHost.Core
 {
 	public delegate void ProcessFileDelegate(string file);
-	public delegate void ProcessFolderDelegate(string folder);
+	public delegate void ProcessFileBatchDelegate( string[] files );
+	public delegate void ProcessFolderDelegate( string folder );
 	public delegate void ProcessFolderBatchDelegate(string[] folders);
 
 	public abstract class FileSystemMonitor
@@ -178,6 +179,132 @@ namespace VersionOne.ServiceHost.Core
 		protected override void InvokeProcessor(string path)
 		{
 			// TODO: Fix this smell
+		}
+	}
+
+	/// <summary>
+	/// More thoroughly determines if a file has been processed.
+	/// Compares file modified stamps for paths that have been logged.
+	/// </summary>
+	public class RecyclingFileMonitor
+	{
+		private IProfile _profile;
+		private IProfile _processedPathsProfile;
+		private ProcessFileBatchDelegate _processor;
+
+		private IProfile ProcessedPaths
+		{
+			get
+			{
+				if (_processedPathsProfile == null)
+					_processedPathsProfile = _profile["ProcessedFiles"]; // Retaining name "ProcessedFiles" for backward-compatibility
+				return _processedPathsProfile;
+			}
+		}
+
+		#region FilterPattern property
+		private string _filterPattern;
+		protected string FilterPattern
+		{
+			get { return _filterPattern; }
+			set { _filterPattern = value; }
+		}
+		#endregion
+
+		#region WatchFolder property
+		private string _watchFolder;
+		protected string WatchFolder
+		{
+			get { return _watchFolder; }
+			set { _watchFolder = value; }
+		}
+		#endregion
+
+		/// <summary>
+		/// Get the processed state of the given file from the profile.
+		/// </summary>
+		/// <param name="file">File to look up.</param>
+		/// <returns>True if processed. False if not processed. Null if not in profile.</returns>
+		protected bool? GetState(string file)
+		{
+			string value = ProcessedPaths[file].Value;
+			if (value == null)
+				return null;
+
+			bool haveProcessed = bool.Parse( value );
+			if ( haveProcessed )
+			{
+				// we've seen this path before, so look at the last write timestamp
+				string stampValue = ProcessedPaths[file]["LastWrite"].Value;
+				long storedLastWrite;
+				if(long.TryParse(stampValue, out storedLastWrite))
+				{
+					long actualLastWrite = File.GetLastWriteTimeUtc( file ).ToBinary();
+
+					if ( actualLastWrite > storedLastWrite )
+						return null;
+				}
+				return true;
+			}
+			return false;
+		}
+
+		/// <summary>
+		/// Save the processing state for the given file to the profile.
+		/// </summary>
+		/// <param name="file">File in question.</param>
+		/// <param name="done">True if processed.</param>
+		protected void SaveState(string file, bool? done)
+		{
+			ProcessedPaths[file].Value = done == null ? null : done.ToString();
+
+			if(done.HasValue && done.Value)
+			{
+				long lastWrite = File.GetLastWriteTimeUtc( file ).ToBinary();
+				ProcessedPaths[file]["LastWrite"].Value = lastWrite.ToString();
+			}
+		}
+
+		public RecyclingFileMonitor( IProfile profile, string watchFolder, string filterPattern, ProcessFileBatchDelegate processor )
+		{
+			_processor = processor;
+			_profile = profile;
+			WatchFolder = watchFolder;
+			FilterPattern = filterPattern;
+			if (string.IsNullOrEmpty(FilterPattern))
+				FilterPattern = "*.*";
+
+			string path = Path.GetFullPath(WatchFolder);
+			if (!Directory.Exists(path))
+				Directory.CreateDirectory(path);
+		}
+
+		
+		protected void InvokeProcessor( string[] files )
+		{
+			_processor( files );
+		}
+
+		public void ProcessFolder( object pubobj )
+		{
+			string path = Path.GetFullPath( WatchFolder );
+			string[] files = Directory.GetFiles( path, FilterPattern, SearchOption.AllDirectories );
+
+			List<string> toProcess = new List<string>();
+
+			foreach ( string file in files )
+			{
+				if ( GetState( file ) == null )
+					toProcess.Add( file );
+			}
+
+			foreach ( string file in toProcess )
+				SaveState( file, false );
+
+			InvokeProcessor( toProcess.ToArray() );
+
+			foreach ( string file in toProcess )
+				SaveState( file, true );
 		}
 	}
 }
