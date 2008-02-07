@@ -94,6 +94,7 @@ namespace VersionOne.ServiceHost.Core.Services
 		protected IAttributeDefinition RequestSuggestedInstance { get { return RequestType.GetAttributeDefinition("Reference"); } }
 		protected IAttributeDefinition RequestMethodology { get { return RequestType.GetAttributeDefinition("Source"); } }
 		protected IAttributeDefinition RequestMethodologyName { get { return RequestType.GetAttributeDefinition("Source.Name"); } }
+		protected IAttributeDefinition RequestCommunityEdition { get { return RequestType.GetAttributeDefinition("Custom_CommunityEdition"); } }
 		protected IAttributeDefinition RequestAssetState { get { return RequestType.GetAttributeDefinition("AssetState"); } }
 		protected IAttributeDefinition RequestCreateDate { get { return RequestType.GetAttributeDefinition("CreateDate"); } }
 		protected IAttributeDefinition RequestCreatedBy { get { return RequestType.GetAttributeDefinition("CreatedBy"); } }
@@ -105,6 +106,7 @@ namespace VersionOne.ServiceHost.Core.Services
 		protected IAttributeDefinition StoryRequests { get { return StoryType.GetAttributeDefinition("Requests"); } }
 		protected IAttributeDefinition StoryReleaseVersion { get { return StoryType.GetAttributeDefinition("Category"); } }
 		protected IAttributeDefinition StoryMethodology { get { return StoryType.GetAttributeDefinition("Source"); } }
+		protected IAttributeDefinition StoryCommunitySite { get { return StoryType.GetAttributeDefinition("Custom_CommunitySite"); } }
 		protected IAttributeDefinition StoryScope { get { return StoryType.GetAttributeDefinition("Scope"); } }
 		protected IAttributeDefinition StoryOwners { get { return StoryType.GetAttributeDefinition("Owners"); } }
 
