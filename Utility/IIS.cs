@@ -124,6 +124,7 @@ namespace VersionOne.IIS
 			using (DirectoryEntry entry = new DirectoryEntry(_path))
 			{
 				foreach (DirectoryEntry child in entry.Children)
+				using (child)
 					if (child.SchemaClassName == type)
 						results.Add(child.Name, GetChild<T>(child.Name));
 			}
