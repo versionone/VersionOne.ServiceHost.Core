@@ -27,8 +27,7 @@ namespace VersionOne.ServiceHost.Logging
 				Exception ex = message.Exception;
 				while (ex != null)
 				{
-					_writer.WriteLine(prefix);
-					_writer.WriteLine(prefix + ex.Message);
+					_writer.WriteLine(prefix + ex.ToString());
 					string extracontent = AdditionalExceptionContent(ex);
 					if (!string.IsNullOrEmpty(extracontent))
 					{
@@ -36,8 +35,6 @@ namespace VersionOne.ServiceHost.Logging
 						_writer.WriteLine(extracontent);
 						_writer.WriteLine(_minorsep);
 					}
-					_writer.WriteLine(_minorsep);
-					_writer.WriteLine(ex.StackTrace);
 					_writer.WriteLine(_minorsep);
 
 					ex = ex.InnerException;
