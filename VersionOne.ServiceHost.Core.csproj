@@ -51,7 +51,7 @@
     <Reference Include="System.Xml" />
     <Reference Include="VersionOne.APIClient, Version=6.4.23.0, Culture=neutral, PublicKeyToken=e0f410c10d2e7630">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Common\VersionOne.APIClient.dll</HintPath>
+      <HintPath>..\Common\VersionOne.APIClient.1.1.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
