@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
-using VersionOne.APIClient;
+using VersionOne.SDK.APIClient;
 using VersionOne.ServiceHost.Eventing;
 using VersionOne.Profile;
 using VersionOne.ServiceHost.HostedServices;
