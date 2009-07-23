@@ -36,6 +36,7 @@ namespace VersionOne.ServiceHost.Eventing
 						catch (Exception ex)
 						{
 							LogMessage.Log("Event Manager Caught Unhandled Exception", ex, this);
+							LogMessage.Log(ex.Message, this);
 						}
 			       	};
 		}
