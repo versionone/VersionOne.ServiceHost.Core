@@ -8,5 +8,6 @@ namespace VersionOne.ServiceHost.Eventing
 	{
 		void Publish(object pubobj);
 		void Subscribe(Type pubtype, EventDelegate listener);
+	    void Unsubscribe(Type pubtype, EventDelegate listener);
 	}
 }

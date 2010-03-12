@@ -25,6 +25,14 @@ namespace VersionOne.ServiceHost.Eventing
 				_subscriptions[pubtype] = (EventDelegate)Delegate.Combine(subs, newlistener);
 		}
 
+        public void Unsubscribe(Type pubtype, EventDelegate listener) {
+            EventDelegate subscription;
+            
+            if(_subscriptions.TryGetValue(pubtype, out subscription)) {
+                _subscriptions[pubtype] = (EventDelegate) Delegate.Remove(subscription, listener);
+            }
+        }
+
 		private EventDelegate WrapListener(EventDelegate listener)
 		{
 			return delegate(object pubobj) 
