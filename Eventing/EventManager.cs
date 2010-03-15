@@ -6,47 +6,50 @@ namespace VersionOne.ServiceHost.Eventing
 {
 	public class EventManager : IEventManager
 	{
-		private IDictionary<Type, EventDelegate> _subscriptions = new Dictionary<Type, EventDelegate>();
+		private readonly IDictionary<Type, EventDelegate> _subscriptions = new Dictionary<Type, EventDelegate>();
 
-		public void Publish(object pubobj)
-		{
-			EventDelegate subs;
-			if (_subscriptions.TryGetValue(pubobj.GetType(), out subs))
-					subs(pubobj);
-		}
-
-		public void Subscribe(Type pubtype, EventDelegate listener)
-		{
-			EventDelegate subs;
-			EventDelegate newlistener = WrapListener(listener);
-			if (!_subscriptions.TryGetValue(pubtype, out subs))
-				_subscriptions[pubtype] = newlistener;
-			else
-				_subscriptions[pubtype] = (EventDelegate)Delegate.Combine(subs, newlistener);
-		}
-
-        public void Unsubscribe(Type pubtype, EventDelegate listener) {
-            EventDelegate subscription;
-            
-            if(_subscriptions.TryGetValue(pubtype, out subscription)) {
-                _subscriptions[pubtype] = (EventDelegate) Delegate.Remove(subscription, listener);
+        public void Publish(object pubobj) 
+        {
+            EventDelegate subs;
+            if (_subscriptions.TryGetValue(pubobj.GetType(), out subs))
+            {
+                try
+                {
+                    subs(pubobj);
+                }
+                catch (Exception ex)
+                {
+                    LogMessage.Log("Event Manager Caught Unhandled Exception", ex, this);
+                    LogMessage.Log(ex.Message, this);
+                }
             }
         }
 
-		private EventDelegate WrapListener(EventDelegate listener)
+	    public void Subscribe(Type pubtype, EventDelegate listener)
 		{
-			return delegate(object pubobj) 
-			       	{
-						try
-						{
-							listener(pubobj);
-						}
-						catch (Exception ex)
-						{
-							LogMessage.Log("Event Manager Caught Unhandled Exception", ex, this);
-							LogMessage.Log(ex.Message, this);
-						}
-			       	};
+			EventDelegate subs;
+			if (!_subscriptions.TryGetValue(pubtype, out subs))
+				_subscriptions[pubtype] = listener;
+			else
+				_subscriptions[pubtype] = (EventDelegate)Delegate.Combine(subs, listener);
 		}
+
+        public void Unsubscribe(Type pubtype, EventDelegate listener)
+        {
+            EventDelegate subscription;
+            
+            if(_subscriptions.TryGetValue(pubtype, out subscription))
+            {
+                EventDelegate updatedSubscription = (EventDelegate) Delegate.Remove(subscription, listener);
+                
+                if (updatedSubscription == null)
+                {
+                    _subscriptions.Remove(pubtype);
+                    return;
+                }
+
+                _subscriptions[pubtype] = updatedSubscription;
+            }
+        }
 	}
 }
