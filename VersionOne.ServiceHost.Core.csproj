@@ -61,6 +61,7 @@
     <Compile Include="..\VersionOne.ServiceHost\Properties\AssemblyInfoProduct.cs">
       <Link>Properties\AssemblyInfoProduct.cs</Link>
     </Compile>
+    <Compile Include="CoverageExcludeAttribute.cs" />
     <Compile Include="CommonMode.cs" />
     <Compile Include="Logging\ILogger.cs" />
     <Compile Include="Profile\XMLNormalizer.cs" />
