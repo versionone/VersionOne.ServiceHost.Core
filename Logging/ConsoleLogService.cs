@@ -1,4 +1,7 @@
 using System;
+using System.Xml;
+using VersionOne.Profile;
+using VersionOne.ServiceHost.Eventing;
 
 namespace VersionOne.ServiceHost.Logging
 {
@@ -10,17 +13,17 @@ namespace VersionOne.ServiceHost.Logging
 		{
 			if (msg.Severity >= _severity)
 			{
-				Console.WriteLine(string.Format("[{0}] {1}", msg.Severity, msg.Message));
+				OutputStringAndFlush(string.Format("[{0}] {1}", msg.Severity, msg.Message));
 				Exception ex = msg.Exception;
 				while (ex != null)
 				{
-					Console.WriteLine(string.Format("[{0}] Exception: {1}", msg.Severity, ex.Message));
+					OutputStringAndFlush(string.Format("[{0}] Exception: {1}", msg.Severity, ex.Message));
 					ex = ex.InnerException;
 				}
 			}
 		}
 
-		public override void Initialize(System.Xml.XmlElement config, VersionOne.ServiceHost.Eventing.IEventManager eventManager, VersionOne.Profile.IProfile profile)
+		public override void Initialize(XmlElement config, IEventManager eventManager, IProfile profile)
 		{
 			base.Initialize(config, eventManager, profile);
 
@@ -34,7 +37,7 @@ namespace VersionOne.ServiceHost.Logging
 				}
 				catch (Exception)
 				{
-					Console.WriteLine( "Couldn't parse LogLevel '{0}'. Try Debug, Info, or Error.");
+					OutputStringAndFlush( "Couldn't parse LogLevel '{0}'. Try Debug, Info, or Error.");
 				}
 
 			}
@@ -42,12 +45,18 @@ namespace VersionOne.ServiceHost.Logging
 
 		protected override void Startup()
 		{
-			Console.WriteLine("[Startup]");
+			OutputStringAndFlush("[Startup]");
 		}		
 		
 		protected override void Shutdown()
 		{
-			Console.WriteLine("[Shutdown]");
+			OutputStringAndFlush("[Shutdown]");
 		}
+
+        private static void OutputStringAndFlush(string data) 
+        {
+            Console.WriteLine(data);
+            Console.Out.Flush();
+        }
 	}
 }
