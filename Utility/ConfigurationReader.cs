@@ -26,6 +26,11 @@ namespace VersionOne.ServiceHost.Core.Utility
 
 			foreach (FieldInfo fieldInfo in configFields)
 			{
+                if(fieldInfo.GetCustomAttributes(typeof(IgnoreConfigFieldAttribute), false).Length > 0) 
+                {
+                    continue;
+                }
+
 				object[] tagNames = fieldInfo.GetCustomAttributes(typeof(ConfigFileValueAttribute), false);
 
 				if (tagNames.Length == 1)
@@ -99,6 +104,9 @@ namespace VersionOne.ServiceHost.Core.Utility
 		}
 		#endregion
 	}
+
+    [AttributeUsage(AttributeTargets.Field)]
+    public class IgnoreConfigFieldAttribute : Attribute { }
 
 	public class ConfigurationException : Exception
 	{
