@@ -30,7 +30,11 @@ namespace VersionOne.ServiceHost.Core.Configuration
 
         public override int GetHashCode()
         {
-            return base.GetHashCode();
+            int code = 31;
+            code += Id != null ? Id.GetHashCode() : 0;
+            code += Name != null ? Name.GetHashCode() : 0;
+
+            return code;
         }
     }
 }
