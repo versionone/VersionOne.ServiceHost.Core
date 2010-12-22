@@ -1,6 +1,8 @@
 using System;
 using System.Reflection;
 using System.Xml;
+using System.Collections.Generic;
+using VersionOne.ServiceHost.Core.Configuration;
 
 namespace VersionOne.ServiceHost.Core.Utility
 {
@@ -53,6 +55,38 @@ namespace VersionOne.ServiceHost.Core.Utility
 				}
 			}
 		}
+
+        /// <summary>
+        /// Extract mappings information, add it to configuration entity.
+        /// </summary>
+        /// <param name="mappings">Mapping to fill.</param>
+        /// <param name="mappingNode">Configuration XML element that contains mapping nodes.</param>
+        /// <param name="nodeName1">Node name with information from first system.</param>
+        /// <param name="nodeName2">Node name with information from second system.</param>
+        public static void ProcessMappingSettings(IDictionary<MappingInfo, MappingInfo> mappings, XmlNode mappingNode, string nodeName1, string nodeName2) {
+            if (mappingNode == null) {
+                return;
+            }
+
+            XmlNodeList nodeList = mappingNode.SelectNodes("Mapping");
+
+            for (int i = 0; i < nodeList.Count; i++) {
+                XmlNode node = nodeList[i];
+                XmlNode nodeData1 = node.SelectSingleNode(nodeName1);
+                XmlNode nodeData2 = node.SelectSingleNode(nodeName2);
+                MappingInfo firstSystem = ParseMappingNode(nodeData1);
+                MappingInfo secondSystem = ParseMappingNode(nodeData2);
+                mappings.Add(firstSystem, secondSystem);
+            }
+        }
+
+        private static MappingInfo ParseMappingNode(XmlNode node) {
+            XmlAttribute idAttribute = node.Attributes["id"];
+            string id = idAttribute != null ? idAttribute.Value : null;
+            string name = node.InnerText;
+            return new MappingInfo(id, name);
+        }
+
 	}
 
 
