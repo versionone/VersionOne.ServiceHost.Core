@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Xml;
 using VersionOne.Profile;
 using VersionOne.ServiceHost.Eventing;
+using VersionOne.ServiceHost.Core.Logging;
 
 namespace VersionOne.ServiceHost.Logging
 {

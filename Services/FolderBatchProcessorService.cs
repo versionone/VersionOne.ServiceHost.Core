@@ -3,7 +3,7 @@ using System.Xml;
 using VersionOne.Profile;
 using VersionOne.ServiceHost.Eventing;
 using VersionOne.ServiceHost.HostedServices;
-using VersionOne.ServiceHost.Logging;
+using VersionOne.ServiceHost.Core.Logging;
 
 namespace VersionOne.ServiceHost.Core
 {
@@ -20,23 +20,25 @@ namespace VersionOne.ServiceHost.Core
 		{
 			_folderFilterPattern = config["Filter"].InnerText;
 			_suiteName = config["SuiteName"].InnerText;
-			_monitor = new RecyclingFileMonitor( profile, config["Watch"].InnerText, _folderFilterPattern, Process);
+			_monitor = new RecyclingFileMonitor(profile, config["Watch"].InnerText, _folderFilterPattern, Process);
 			_eventManager = eventManager;
 			_eventManager.Subscribe(EventSinkType, _monitor.ProcessFolder);
 		}
 
 		private void Process(string[] files)
 		{
+            ILogger logger = new Logger(EventManager);
+
 			try
 			{
-				LogMessage.Log(LogMessage.SeverityType.Debug, string.Format("Starting Processing {0} files: {1}", files.Length, string.Join(",", files)), EventManager);
+				logger.Log(LogMessage.SeverityType.Debug, string.Format("Starting Processing {0} files: {1}", files.Length, string.Join(",", files)));
 				InternalProcess(files, _suiteName);
-				LogMessage.Log( LogMessage.SeverityType.Debug, string.Format( "Finished Processing {0} files: {1}", files.Length, string.Join( ",", files ) ), EventManager );
+				logger.Log(LogMessage.SeverityType.Debug, string.Format("Finished Processing {0} files: {1}", files.Length, string.Join( ",", files ) ));
 			}
 			catch (Exception ex)
 			{
 				string message = string.Format( "Failed Processing {0} files: {1}\n{2}", files.Length, string.Join( ",", files ), ex.ToString() );
-				LogMessage.Log( LogMessage.SeverityType.Error, message, EventManager );
+				logger.Log(LogMessage.SeverityType.Error, message);
 			}
 		}
 

@@ -1,12 +1,20 @@
 using System;
 using System.Collections.Generic;
 using VersionOne.ServiceHost.Logging;
+using VersionOne.ServiceHost.Core.Logging;
 
 namespace VersionOne.ServiceHost.Eventing
 {
 	public class EventManager : IEventManager
 	{
 		private readonly IDictionary<Type, EventDelegate> _subscriptions = new Dictionary<Type, EventDelegate>();
+
+        private readonly ILogger logger;
+
+        public EventManager() 
+        {
+            logger = new Logger(this);
+        }
 
         public void Publish(object pubobj) 
         {
@@ -19,8 +27,8 @@ namespace VersionOne.ServiceHost.Eventing
                 }
                 catch (Exception ex)
                 {
-                    LogMessage.Log("Event Manager Caught Unhandled Exception", ex, this);
-                    LogMessage.Log(ex.Message, this);
+                    logger.Log("Event Manager Caught Unhandled Exception", ex);
+                    logger.Log(ex.Message);
                 }
             }
         }

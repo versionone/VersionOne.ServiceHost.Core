@@ -1,7 +1,7 @@
 using System;
 using VersionOne.ServiceHost.Eventing;
 
-namespace VersionOne.ServiceHost.Logging
+namespace VersionOne.ServiceHost.Core.Logging
 {
 	public class LogMessage
 	{
@@ -17,32 +17,12 @@ namespace VersionOne.ServiceHost.Logging
 		public readonly Exception Exception;
 		public readonly DateTime Stamp;
 		
-		private LogMessage(SeverityType severity, string message, Exception exception)
+		public LogMessage(SeverityType severity, string message, Exception exception)
 		{
 			Severity = severity;
 			Message = message;
 			Exception = exception;
 			Stamp = DateTime.Now;
-		}
-		
-		public static void Log(string message, IEventManager eventmanager)
-		{
-			Log(SeverityType.Info, message, null, eventmanager);
-		}
-
-		public static void Log(string message, Exception exception, IEventManager eventmanager)
-		{
-			Log(SeverityType.Error, message, exception, eventmanager);
-		}		
-		
-		public static void Log(SeverityType severity, string message, IEventManager eventmanager)
-		{
-			Log(severity, message, null, eventmanager);
-		}
-		
-		public static void Log(SeverityType severity, string message, Exception exception, IEventManager eventmanager)
-		{
-			eventmanager.Publish(new LogMessage(severity, message, exception));
 		}
 	}
 }

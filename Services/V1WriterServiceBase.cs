@@ -6,6 +6,7 @@ using VersionOne.SDK.APIClient;
 using VersionOne.ServiceHost.Eventing;
 using VersionOne.Profile;
 using VersionOne.ServiceHost.HostedServices;
+using VersionOne.ServiceHost.Core.Logging;
 
 namespace VersionOne.ServiceHost.Core.Services
 {
@@ -14,6 +15,7 @@ namespace VersionOne.ServiceHost.Core.Services
 		private ICentral _central;
 		protected XmlElement _config;
 		protected IEventManager _eventManager;
+        protected ILogger logger;
 
 		protected virtual ICentral Central
 		{
@@ -33,6 +35,7 @@ namespace VersionOne.ServiceHost.Core.Services
 		{
 			_config = config;
 			_eventManager = eventManager;
+            logger = new Logger(eventManager);
 		}
 
 		protected abstract NeededAssetType[] NeededAssetTypes { get; }
@@ -76,7 +79,8 @@ namespace VersionOne.ServiceHost.Core.Services
 		}
 
 		#region Meta wrappers
-		protected IAssetType RequestType { get { return Central.MetaModel.GetAssetType("Request"); } }
+		
+        protected IAssetType RequestType { get { return Central.MetaModel.GetAssetType("Request"); } }
 		protected IAssetType DefectType { get { return Central.MetaModel.GetAssetType("Defect"); } }
 		protected IAssetType StoryType { get { return Central.MetaModel.GetAssetType("Story"); } }
 		protected IAssetType ReleaseVersionType { get { return Central.MetaModel.GetAssetType("StoryCategory"); } }
@@ -121,7 +125,7 @@ namespace VersionOne.ServiceHost.Core.Services
 		protected IAttributeDefinition NoteAsset { get { return NoteType.GetAttributeDefinition("Asset"); } }
 		protected IAttributeDefinition NotePersonal { get { return NoteType.GetAttributeDefinition("Personal"); } }
 		protected IAttributeDefinition NoteContent { get { return NoteType.GetAttributeDefinition("Content"); } }
-		#endregion
-
+		
+        #endregion
 	}
 }

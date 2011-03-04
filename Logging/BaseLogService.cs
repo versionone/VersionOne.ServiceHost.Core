@@ -6,6 +6,7 @@ using VersionOne.Profile;
 using VersionOne.ServiceHost.Core;
 using VersionOne.ServiceHost.Eventing;
 using VersionOne.ServiceHost.HostedServices;
+using VersionOne.ServiceHost.Core.Logging;
 
 namespace VersionOne.ServiceHost.Logging
 {

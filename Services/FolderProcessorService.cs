@@ -3,7 +3,7 @@ using System.Xml;
 using VersionOne.Profile;
 using VersionOne.ServiceHost.Eventing;
 using VersionOne.ServiceHost.HostedServices;
-using VersionOne.ServiceHost.Logging;
+using VersionOne.ServiceHost.Core.Logging;
 
 namespace VersionOne.ServiceHost.Core
 {
@@ -23,15 +23,17 @@ namespace VersionOne.ServiceHost.Core
 
 		private void Process(string file)
 		{
+            ILogger logger = new Logger(EventManager);
+
 			try
 			{
-				LogMessage.Log(string.Format("Starting Processing File: {0}", file),EventManager);
+				logger.Log(string.Format("Starting Processing File: {0}", file));
 				InternalProcess(file);
-				LogMessage.Log(string.Format("Finished Processing File: {0}", file), EventManager);
+				logger.Log(string.Format("Finished Processing File: {0}", file));
 			}
 			catch (Exception ex)
 			{
-				LogMessage.Log(string.Format("Failed Processing File: {0}", file), ex, EventManager);
+				logger.Log(string.Format("Failed Processing File: {0}", file), ex);
 			}
 		}
 		

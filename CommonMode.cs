@@ -4,7 +4,7 @@ using System.Threading;
 using VersionOne.Profile;
 using VersionOne.ServiceHost.Core;
 using VersionOne.ServiceHost.Eventing;
-using VersionOne.ServiceHost.Logging;
+using VersionOne.ServiceHost.Core.Logging;
 
 namespace VersionOne.ServiceHost
 {
@@ -15,19 +15,30 @@ namespace VersionOne.ServiceHost
 		{
 			get
 			{
-				if (_eventmanager == null)
-					_eventmanager = new EventManager();
+                if (_eventmanager == null) 
+                {
+                    _eventmanager = new EventManager();
+                }
+
 				return _eventmanager;
 			}
 		}
+
+        protected ILogger Logger 
+        {
+            get { return new Logger(EventManager); }
+        }
 
 		private IList<ServiceInfo> _services;
 		protected IList<ServiceInfo> Services
 		{
 			get
 			{
-				if (_services == null)
-					_services = (IList<ServiceInfo>)System.Configuration.ConfigurationManager.GetSection("Services");		
+                if (_services == null) 
+                {
+                    _services = (IList<ServiceInfo>)System.Configuration.ConfigurationManager.GetSection("Services");
+                }
+
 				return _services;
 			}
 		}
@@ -37,8 +48,11 @@ namespace VersionOne.ServiceHost
 		{
 			get
 			{
-				if (_profilestore == null)
-					_profilestore = new XmlProfileStore("profile.xml");
+                if (_profilestore == null) 
+                {
+                    _profilestore = new XmlProfileStore("profile.xml");
+                }
+
 				return _profilestore;
 			}
 		}
@@ -49,9 +63,9 @@ namespace VersionOne.ServiceHost
 
 			foreach (ServiceInfo ss in Services)
 			{
-				LogMessage.Log(string.Format("Initializing {0}", ss.Name), EventManager);
+				Logger.Log(string.Format("Initializing {0}", ss.Name));
 				ss.Service.Initialize(ss.Config, EventManager, ProfileStore[ss.Name]);
-				LogMessage.Log(string.Format("Initialized {0}", ss.Name), EventManager);
+				Logger.Log(string.Format("Initialized {0}", ss.Name));
 			}
 
 			EventManager.Publish(ServiceHostState.Startup);
@@ -60,7 +74,7 @@ namespace VersionOne.ServiceHost
 
 		private void OnUnhandledException(object sender, UnhandledExceptionEventArgs e)
 		{
-			LogMessage.Log("Service Host Caught Unhandled Exception", (Exception)e.ExceptionObject, EventManager); 
+			Logger.Log("Service Host Caught Unhandled Exception", (Exception) e.ExceptionObject); 
 		}
 
 		protected void Shutdown()

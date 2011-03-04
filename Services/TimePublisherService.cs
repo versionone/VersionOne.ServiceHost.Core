@@ -4,7 +4,7 @@ using System.Xml;
 using VersionOne.Profile;
 using VersionOne.ServiceHost.Eventing;
 using VersionOne.ServiceHost.HostedServices;
-using VersionOne.ServiceHost.Logging;
+using VersionOne.ServiceHost.Core.Logging;
 
 namespace VersionOne.ServiceHost.Core.Services
 {
@@ -18,6 +18,7 @@ namespace VersionOne.ServiceHost.Core.Services
 		private double _interval = 0;
 		private Type _publishtype = null;
 		private IEventManager _eventmanager;
+        private ILogger logger;
 		private Timer _timer;
 
 		public void Initialize(XmlElement config, IEventManager eventManager, IProfile profile)
@@ -28,6 +29,8 @@ namespace VersionOne.ServiceHost.Core.Services
 			
 			_eventmanager = eventManager;
 			_eventmanager.Subscribe(typeof(ServiceHostState),HostStateChanged);
+
+            logger = new Logger(eventManager);
 
 			_timer = new Timer(_interval);
 			_timer.Enabled = false;
@@ -52,14 +55,14 @@ namespace VersionOne.ServiceHost.Core.Services
 		/// <param name="sender">Not used.</param>
 		/// <param name="e">The timer event.</param>
 		/// <remarks>If the previous event has not returned, we skip the current interval.</remarks>
-		void Timer_Elapsed(object sender, ElapsedEventArgs e)
+		private void Timer_Elapsed(object sender, ElapsedEventArgs e)
 		{
 			// The check-and-set of _busy is not thread-safe, but that shouldn't matter unless the inverval is set unreasonably small.
 			if (!_busy)
 			{
 				_busy = true;
 				object pub = Activator.CreateInstance(_publishtype);
-				LogMessage.Log(LogMessage.SeverityType.Debug, string.Format("Timer Elapsed {0} {1} {2}", _interval, _publishtype.Name, e.SignalTime), _eventmanager);
+				logger.Log(LogMessage.SeverityType.Debug, string.Format("Timer Elapsed {0} {1} {2}", _interval, _publishtype.Name, e.SignalTime));
 				_eventmanager.Publish(pub);
 				_busy = false;
 			}
