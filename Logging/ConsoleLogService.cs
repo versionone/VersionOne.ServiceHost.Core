@@ -1,63 +1,63 @@
-using System;
-using System.Xml;
-using VersionOne.Profile;
-using VersionOne.ServiceHost.Eventing;
-using VersionOne.ServiceHost.Core.Logging;
+//using System;
+//using System.Xml;
+//using VersionOne.Profile;
+//using VersionOne.ServiceHost.Eventing;
+//using VersionOne.ServiceHost.Core.Logging;
+//using log4net;
+//using log4net.Appender;
+//using log4net.Layout;
+//using log4net.Repository.Hierarchy;
+//using log4net.Core;
 
-namespace VersionOne.ServiceHost.Logging
-{
-	public class ConsoleLogService : BaseLogService
-	{
-		private LogMessage.SeverityType _severity = LogMessage.SeverityType.Info;
+//namespace VersionOne.ServiceHost.Logging
+//{
+//    public class ConsoleLogService : BaseLogService
+//    {
+//        private LogMessage.SeverityType severity = LogMessage.SeverityType.Info;
 
-		protected override void Log(LogMessage msg)
-		{
-			if (msg.Severity >= _severity)
-			{
-				OutputStringAndFlush(string.Format("[{0}] {1}", msg.Severity, msg.Message));
-				Exception ex = msg.Exception;
-				while (ex != null)
-				{
-					OutputStringAndFlush(string.Format("[{0}] Exception: {1}", msg.Severity, ex.Message));
-					ex = ex.InnerException;
-				}
-			}
-		}
+//        public override void Initialize(XmlElement config, IEventManager eventManager, IProfile profile)
+//        {
+//            base.Initialize(config, eventManager, profile);
 
-		public override void Initialize(XmlElement config, IEventManager eventManager, IProfile profile)
-		{
-			base.Initialize(config, eventManager, profile);
+//            if (config["LogLevel"] != null && ! string.IsNullOrEmpty(config["LogLevel"].InnerText))
+//            {
+//                string logLevel = config["LogLevel"].InnerText;
 
-			if (config["LogLevel"] != null && ! string.IsNullOrEmpty(config["LogLevel"].InnerText))
-			{
-				string logLevel = config["LogLevel"].InnerText;
+//                bool severityParsed = false;
 
-				try
-				{
-					_severity = (LogMessage.SeverityType) Enum.Parse(typeof(LogMessage.SeverityType), logLevel, true);
-				}
-				catch (Exception)
-				{
-					OutputStringAndFlush( "Couldn't parse LogLevel '{0}'. Try Debug, Info, or Error.");
-				}
+//                try
+//                {
+//                    severity = (LogMessage.SeverityType) Enum.Parse(typeof(LogMessage.SeverityType), logLevel, true);
+//                    severityParsed = true;    
+//                }
+//                catch (Exception)
+//                {
+//                    // Do nothing, severity defaults to Info
+//                }
 
-			}
-		}
+//                ConfigureLogger(severity);
 
-		protected override void Startup()
-		{
-			OutputStringAndFlush("[Startup]");
-		}		
+//                if(!severityParsed) 
+//                {
+//                    Logger.Info("Failed to parse Console logger severity, try Debug, Info or Error. Setting default value [Info].");
+//                }
+//            }
+//        }
+
+//        protected override void Startup()
+//        {
+//            Logger.Info("[Startup]");
+//        }		
 		
-		protected override void Shutdown()
-		{
-			OutputStringAndFlush("[Shutdown]");
-		}
+//        protected override void Shutdown()
+//        {
+//            Logger.Info("[Shutdown]");
+//        }
 
-        private static void OutputStringAndFlush(string data) 
-        {
-            Console.WriteLine(data);
-            Console.Out.Flush();
-        }
-	}
-}
+//        private static void OutputStringAndFlush(string data) 
+//        {
+//            Console.WriteLine(data);
+//            Console.Out.Flush();
+//        }
+//    }
+//}
