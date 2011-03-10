@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using VersionOne.ServiceHost.Logging;
 using VersionOne.ServiceHost.Core.Logging;
 
 namespace VersionOne.ServiceHost.Eventing
