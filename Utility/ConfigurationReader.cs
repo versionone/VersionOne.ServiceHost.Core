@@ -76,6 +76,9 @@ namespace VersionOne.ServiceHost.Core.Utility
                 XmlNode nodeData2 = node.SelectSingleNode(nodeName2);
                 MappingInfo firstSystem = ParseMappingNode(nodeData1);
                 MappingInfo secondSystem = ParseMappingNode(nodeData2);
+                // TODO potential ArgumentException
+                // if user modifies config manually
+                // can be record with same keys
                 mappings.Add(firstSystem, secondSystem);
             }
         }
