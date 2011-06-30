@@ -70,6 +70,9 @@ namespace VersionOne.ServiceHost.Core.Utility
 
             XmlNodeList nodeList = mappingNode.SelectNodes("Mapping");
 
+            if (nodeList == null) {
+                return;
+            }
             for (int i = 0; i < nodeList.Count; i++) {
                 XmlNode node = nodeList[i];
                 XmlNode nodeData1 = node.SelectSingleNode(nodeName1);
