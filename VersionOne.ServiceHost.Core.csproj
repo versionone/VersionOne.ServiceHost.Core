@@ -75,6 +75,7 @@
       <Link>Properties\AssemblyInfoProduct.cs</Link>
     </Compile>
     <Compile Include="CommonMode.cs" />
+    <Compile Include="ComponentRepository.cs" />
     <Compile Include="Configuration\MappingInfo.cs" />
     <Compile Include="Logging\ILogger.cs" />
     <Compile Include="Logging\Logger.cs" />
