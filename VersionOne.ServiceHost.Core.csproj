@@ -95,6 +95,11 @@
     <Compile Include="Services\IHostedService.cs" />
     <Compile Include="Services\TimePublisherService.cs" />
     <Compile Include="Services\V1WriterServiceBase.cs" />
+    <Compile Include="StartupValidation\IResolver.cs" />
+    <Compile Include="StartupValidation\IValidationStep.cs" />
+    <Compile Include="StartupValidation\IValidator.cs" />
+    <Compile Include="StartupValidation\ValidationException.cs" />
+    <Compile Include="StartupValidation\ValidationStep.cs" />
     <Compile Include="Utility\ConfigurationReader.cs" />
     <Compile Include="Utility\FileSys.cs" />
     <Compile Include="Utility\FolderMonitor.cs" />
