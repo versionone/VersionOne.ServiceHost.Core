@@ -1,5 +1,5 @@
 ﻿namespace VersionOne.ServiceHost.Core.StartupValidation {
-    public interface IValidator {
-        bool Validate();
+    public interface IValidator<T> {
+        ValidationResults<T> Validate();
     }
 }
