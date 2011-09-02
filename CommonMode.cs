@@ -67,7 +67,7 @@ namespace VersionOne.ServiceHost
 				ss.Service.Initialize(ss.Config, EventManager, ProfileStore[ss.Name]);
 				Logger.Log(string.Format("Initialized {0}", ss.Name));
 			}
-
+            EventManager.Publish(ServiceHostState.Validate);
 			EventManager.Publish(ServiceHostState.Startup);
 			EventManager.Subscribe(typeof(FlushProfile), this._FlushProfile);
 		}
