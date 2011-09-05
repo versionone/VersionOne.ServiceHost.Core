@@ -79,9 +79,11 @@ namespace VersionOne.ServiceHost.Core.Utility
                 XmlNode nodeData2 = node.SelectSingleNode(nodeName2);
                 MappingInfo firstSystem = ParseMappingNode(nodeData1);
                 MappingInfo secondSystem = ParseMappingNode(nodeData2);
-                // TODO potential ArgumentException
-                // if user modifies config manually
-                // can be record with same keys
+                if (mappings.ContainsKey(firstSystem)) {
+                    throw new ConfigurationException(
+                        string.Format("Can't add new mapping data. Already exist mapping for {0}.",
+                            string.IsNullOrEmpty(firstSystem.Name) ? firstSystem.Id : firstSystem.Name));
+                }
                 mappings.Add(firstSystem, secondSystem);
             }
         }

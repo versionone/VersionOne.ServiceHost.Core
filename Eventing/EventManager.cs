@@ -29,7 +29,7 @@ namespace VersionOne.ServiceHost.Eventing
                 {
                     logger.Log("Event Manager Caught Unhandled Exception", ex);
                     logger.Log(ex.Message);
-                    //TODO find smart way to make start up validation crash
+                    //TODO find smart way to make startup validation crash
                     if (pubobj is ServiceHostState && ServiceHostState.Validate.Equals(pubobj)) {
                         throw;
                     }

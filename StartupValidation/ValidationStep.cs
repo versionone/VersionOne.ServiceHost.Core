@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 
 namespace VersionOne.ServiceHost.Core.StartupValidation {
     public class ValidationStep<TValidator, TValidationResult, TResolver> : IValidationStep
@@ -14,6 +15,10 @@ namespace VersionOne.ServiceHost.Core.StartupValidation {
         }
 
         public void Run() {
+            if (Equals(validator, default(TValidator))) {
+                throw new InvalidOperationException("Cannot run the step without a validator");
+            }
+
             var results = validator.Validate();
 
             if(!results.IsValid && resolver == null || (resolver != null && !resolver.Resolve(results.Items.Select(x => x.Target).ToList()))) {

@@ -11,6 +11,10 @@ namespace VersionOne.ServiceHost.Core.Configuration {
             Name = name;
         }
 
+        public bool IsNullOrEmpty() {
+            return string.IsNullOrEmpty(Id) && string.IsNullOrEmpty(Name);
+        }
+
         public override bool Equals(object obj) {
             if(obj == null || obj.GetType() != typeof(MappingInfo)) {
                 return false;
