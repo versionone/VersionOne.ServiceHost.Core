@@ -1,4 +1,4 @@
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using VersionOne.ServiceHost.Eventing;
 
 namespace VersionOne.ServiceHost.Core.StartupValidation {
@@ -19,9 +19,6 @@ namespace VersionOne.ServiceHost.Core.StartupValidation {
             }
         }
 
-        protected abstract ReadOnlyCollection<IValidationStep> CreateValidators();
-
-
-        
+        protected abstract IEnumerable<IValidationStep> CreateValidators();
     }
 }

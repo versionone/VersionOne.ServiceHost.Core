@@ -3,9 +3,8 @@ using System.Linq;
 
 namespace VersionOne.ServiceHost.Core.StartupValidation {
     public class ValidationStep<TValidator, TValidationResult, TResolver> : IValidationStep
-        where TValidator : IValidator<TValidationResult>
-        where TResolver : class, IResolver<TValidationResult>
-    {
+            where TValidator : IValidator<TValidationResult>
+            where TResolver : class, IResolver<TValidationResult> {
         private readonly TValidator validator;
         private readonly TResolver resolver;
 
@@ -15,7 +14,7 @@ namespace VersionOne.ServiceHost.Core.StartupValidation {
         }
 
         public void Run() {
-            if (Equals(validator, default(TValidator))) {
+            if(Equals(validator, default(TValidator))) {
                 throw new InvalidOperationException("Cannot run the step without a validator");
             }
 
