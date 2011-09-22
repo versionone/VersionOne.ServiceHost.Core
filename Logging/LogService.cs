@@ -1,18 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using VersionOne.ServiceHost.HostedServices;
 using System.Xml;
 using VersionOne.ServiceHost.Eventing;
 using VersionOne.Profile;
 using log4net;
 using log4net.Appender;
+using log4net.Filter;
 using log4net.Repository.Hierarchy;
 
 using Log4netLogger = log4net.Repository.Hierarchy.Logger;
 using log4net.Core;
 using log4net.Layout;
-using log4net.Util;
 
 namespace VersionOne.ServiceHost.Core.Logging 
 {
@@ -162,8 +161,21 @@ namespace VersionOne.ServiceHost.Core.Logging
             {
                 root.AddAppender(appender);
             }
-            
+            DisableHibernateLogging(root);
+
             root.Repository.Configured = true;
+        }
+
+        private static void SetLevel(string loggerName, string levelName)
+        {
+            var log = LogManager.GetLogger(loggerName);
+            var logger = (log4net.Repository.Hierarchy.Logger)log.Logger;
+            logger.Level = logger.Hierarchy.LevelMap[levelName];
+        }
+
+        private static void DisableHibernateLogging(Log4netLogger root) {
+            SetLevel("NHibernate", "Error");
+            SetLevel("NHibernate.SQL", "Error");
         }
 
         private IAppender CreateConsoleAppender(LogMessage.SeverityType severity) 
@@ -188,6 +200,11 @@ namespace VersionOne.ServiceHost.Core.Logging
             appender.Name = "Console";
             appender.Threshold = TranslateLevel(severity);
             appender.ActivateOptions();
+
+            var filter = new LoggerMatchFilter {AcceptOnMatch = false, LoggerToMatch = "NHibernate"};
+            appender.AddFilter(filter);
+            filter = new LoggerMatchFilter { AcceptOnMatch = false, LoggerToMatch = "NHibernate.SQL" };
+            appender.AddFilter(filter);
 
             return appender;
         }
