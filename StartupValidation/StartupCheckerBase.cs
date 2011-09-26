@@ -3,7 +3,13 @@ using VersionOne.ServiceHost.Eventing;
 
 namespace VersionOne.ServiceHost.Core.StartupValidation {
     public abstract class StartupCheckerBase {
+        private readonly IEventManager eventManager;
+
         protected StartupCheckerBase(IEventManager eventManager) {
+            this.eventManager = eventManager;
+        }
+
+        public void Initialize() {
             eventManager.Subscribe(typeof(ServiceHostState), Run);
         }
 
@@ -17,8 +23,12 @@ namespace VersionOne.ServiceHost.Core.StartupValidation {
             foreach(var step in steps) {
                 step.Run();
             }
+
+            Finalization();
         }
 
         protected abstract IEnumerable<IValidationStep> CreateValidators();
+
+        protected virtual void Finalization() {}
     }
 }
