@@ -1,10 +1,12 @@
 ﻿using System;
 using VersionOne.ServiceHost.Eventing;
+using Ninject;
 
 namespace VersionOne.ServiceHost.Core.Logging {
     public class Logger : ILogger {
         private readonly IEventManager eventManager;
 
+        [Inject]
         public Logger(IEventManager eventManager) {
             this.eventManager = eventManager;
         }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using VersionOne.Profile;
 using VersionOne.ServiceHost.Core;
+using VersionOne.ServiceHost.Core.Eventing;
 using VersionOne.ServiceHost.Eventing;
 using VersionOne.ServiceHost.Core.Logging;
 
