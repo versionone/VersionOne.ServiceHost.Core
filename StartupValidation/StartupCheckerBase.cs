@@ -24,11 +24,11 @@ namespace VersionOne.ServiceHost.Core.StartupValidation {
                 step.Run();
             }
 
-            Finalization();
+            Complete();
         }
 
         protected abstract IEnumerable<IValidationStep> CreateValidators();
 
-        protected virtual void Finalization() {}
+        protected virtual void Complete() {}
     }
 }
