@@ -1,42 +1,35 @@
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Threading;
 using VersionOne.Profile;
 using VersionOne.ServiceHost.Core.Eventing;
-using VersionOne.ServiceHost.Eventing;
 using VersionOne.ServiceHost.Core.Logging;
+using VersionOne.ServiceHost.Eventing;
 
 namespace VersionOne.ServiceHost.Core {
-    public abstract class CommonMode {
+    public sealed class CommonStartup {
         public class FlushProfile { }
 
-        private IEventManager eventmanager;
+        private IProfileStore profileStore;
         private IList<ServiceInfo> services;
-        private IProfileStore profilestore;
 
-        protected IEventManager EventManager {
-            get { return eventmanager ?? (eventmanager = new EventManager()); }
+        public IEventManager EventManager { get; private set; }
+        public ILogger Logger { get; private set; }
+
+        public void Initialize() {
+            EventManager = new EventManager();
+            Logger = new Logger(EventManager);
+            services = (IList<ServiceInfo>)ConfigurationManager.GetSection("Services");
+            profileStore = new XmlProfileStore("profile.xml");
         }
 
-        protected ILogger Logger {
-            get { return new Logger(EventManager); }
-        }
-
-        protected IEnumerable<ServiceInfo> Services {
-            get { return services ?? (services = (IList<ServiceInfo>)System.Configuration.ConfigurationManager.GetSection("Services")); }
-        }
-
-
-        protected IProfileStore ProfileStore {
-            get { return profilestore ?? (profilestore = new XmlProfileStore("profile.xml")); }
-        }
-
-        protected void Startup() {
+        public void Startup() {
             AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
 
-            foreach(var ss in Services) {
+            foreach(var ss in services) {
                 Logger.Log(string.Format("Initializing {0}", ss.Name));
-                ss.Service.Initialize(ss.Config, EventManager, ProfileStore[ss.Name]);
+                ss.Service.Initialize(ss.Config, EventManager, profileStore[ss.Name]);
                 Logger.Log(string.Format("Initialized {0}", ss.Name));
             }
 
@@ -49,14 +42,14 @@ namespace VersionOne.ServiceHost.Core {
             Logger.Log("Service Host Caught Unhandled Exception", (Exception)e.ExceptionObject);
         }
 
-        protected void Shutdown() {
+        public void Shutdown() {
             EventManager.Publish(ServiceHostState.Shutdown);
             Thread.Sleep(5 * 1000);
-            ProfileStore.Flush();
+            profileStore.Flush();
         }
 
         private void FlushProfileImpl(object o) {
-            ProfileStore.Flush();
+            profileStore.Flush();
         }
     }
 }
