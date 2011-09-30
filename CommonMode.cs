@@ -8,7 +8,7 @@ using VersionOne.ServiceHost.Core.Logging;
 using VersionOne.ServiceHost.Eventing;
 
 namespace VersionOne.ServiceHost.Core {
-    public sealed class CommonStartup {
+    public sealed class CommonMode {
         public class FlushProfile { }
 
         private IProfileStore profileStore;

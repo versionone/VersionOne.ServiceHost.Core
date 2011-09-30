@@ -80,7 +80,7 @@
     </Compile>
     <Compile Include="CommonModeFactory.cs" />
     <Compile Include="ModeBase.cs" />
-    <Compile Include="CommonStartup.cs" />
+    <Compile Include="CommonMode.cs" />
     <Compile Include="ComponentRepository.cs" />
     <Compile Include="Configuration\MappingInfo.cs" />
     <Compile Include="Logging\ILogger.cs" />

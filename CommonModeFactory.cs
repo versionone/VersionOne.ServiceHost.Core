@@ -6,8 +6,8 @@
             get { return instance ?? (instance = new CommonModeFactory()); }
         }
 
-        public CommonStartup CreateStartup() {
-            var starter = new CommonStartup();
+        public CommonMode CreateStartup() {
+            var starter = new CommonMode();
             starter.Initialize();
             return starter;
         }
