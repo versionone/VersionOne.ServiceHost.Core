@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Threading;
 using VersionOne.Profile;
+using VersionOne.ServiceHost.Core;
 using VersionOne.ServiceHost.Core.Eventing;
 using VersionOne.ServiceHost.Core.Logging;
 using VersionOne.ServiceHost.Eventing;
 
-namespace VersionOne.ServiceHost.Core {
+namespace VersionOne.ServiceHost {
     public sealed class CommonMode {
         public class FlushProfile { }
 
