@@ -12,12 +12,12 @@ namespace VersionOne.ServiceHost.Core.StartupValidation {
 
         public void Run() {
             if(validator == null) {
-                throw new InvalidOperationException("Cannot run the step without a validator");
+                throw new InvalidOperationException("Cannot run the step without a validator.");
             }
             var isValid = validator.Validate();
 
             if(!isValid && (resolver == null || resolver != null && !resolver.Resolve())) {
-                throw new ValidationException("Validation error during service initialization");
+                throw new ValidationException("Validation error during service initialization.");
             }
         }
     }
