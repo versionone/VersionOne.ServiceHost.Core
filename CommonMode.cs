@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Threading;
+using Ninject;
 using VersionOne.Profile;
 using VersionOne.ServiceHost.Core;
 using VersionOne.ServiceHost.Core.Eventing;
@@ -14,6 +15,7 @@ namespace VersionOne.ServiceHost {
 
         private IProfileStore profileStore;
         private IList<ServiceInfo> services;
+        private IKernel container;
 
         public IEventManager EventManager { get; private set; }
         public ILogger Logger { get; private set; }

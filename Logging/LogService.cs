@@ -1,75 +1,63 @@
 ﻿using System;
 using System.Collections.Generic;
-using VersionOne.ServiceHost.HostedServices;
 using System.Xml;
-using VersionOne.ServiceHost.Eventing;
+using Ninject;
 using VersionOne.Profile;
+using VersionOne.ServiceHost.Core.Services;
+using VersionOne.ServiceHost.Eventing;
 using log4net;
 using log4net.Appender;
-using log4net.Filter;
-using log4net.Repository.Hierarchy;
-
-using Log4netLogger = log4net.Repository.Hierarchy.Logger;
 using log4net.Core;
+using log4net.Filter;
 using log4net.Layout;
+using log4net.Repository.Hierarchy;
+using Log4netLogger = log4net.Repository.Hierarchy.Logger;
 
-namespace VersionOne.ServiceHost.Core.Logging 
-{
-    public class LogService : IHostedService 
-    {
+namespace VersionOne.ServiceHost.Core.Logging {
+    public class LogService : IHostedService {
         private const string LogPattern = "[%level] %date{dd-MM-yyyy HH:mm:ss} %message%n";
-
         private const string FileLoggerNode = "File";
         private const string ConsoleLoggerNode = "Console";
         private const string EnabledAttribute = "enabled";
-        
         private const string DefaultLogFileName = "./ServiceHost.log";
         private const string DefaultMaximumFileSize = "10MB";
-
         private const LogMessage.SeverityType DefaultSeverity = LogMessage.SeverityType.Info;
 
         private IEventManager eventManager;
         private ILog logger;
 
-        private ILog Logger 
-        {
+        private ILog Logger {
             get { return LogManager.GetLogger(typeof(LogService)); }
         }
 
-        public void Initialize(XmlElement config, IEventManager eventManager, IProfile profile) 
-        {
+        public void Initialize(XmlElement config, IEventManager eventManager, IProfile profile) {
             this.eventManager = eventManager;
-            
+
             eventManager.Subscribe(typeof(LogMessage), HandleLogMessage);
-			eventManager.Subscribe(typeof(ServiceHostState), HandleServiceHostStateMessage);
+            eventManager.Subscribe(typeof(ServiceHostState), HandleServiceHostStateMessage);
 
             ConfigureAppenders(config);
         }
 
-        private void HandleLogMessage(object pubobj)
-		{
-			Log((LogMessage) pubobj);
-		}
+        private void HandleLogMessage(object pubobj) {
+            Log((LogMessage)pubobj);
+        }
 
-		private void HandleServiceHostStateMessage(object pubobj)
-		{
-			ServiceHostState state = (ServiceHostState) pubobj;
-			
-            switch (state)
-			{
-				case ServiceHostState.Startup:
+        private void HandleServiceHostStateMessage(object pubobj) {
+            var state = (ServiceHostState)pubobj;
+
+            switch(state) {
+                case ServiceHostState.Startup:
                     Logger.Info("[Startup]");
-					break;
-				case ServiceHostState.Shutdown:
-					Logger.Info("[Shutdown]");
-					break;
-			}
-		}
+                    break;
+                case ServiceHostState.Shutdown:
+                    Logger.Info("[Shutdown]");
+                    break;
+            }
+        }
 
-        private void Log(LogMessage message) 
-        {
-            switch (message.Severity) 
-            {
+        private void Log(LogMessage message) {
+            switch(message.Severity) {
                 case LogMessage.SeverityType.Debug:
                     Logger.Debug(message.Message, message.Exception);
                     return;
@@ -88,27 +76,23 @@ namespace VersionOne.ServiceHost.Core.Logging
             }
         }
 
-        private void ConfigureAppenders(XmlElement config) 
-        {
+        private void ConfigureAppenders(XmlElement config) {
             ICollection<IAppender> appenders = new List<IAppender>();
+            var consoleNode = config.SelectSingleNode("//Console");
 
-            XmlNode consoleNode = config.SelectSingleNode("//Console");
-
-            if(IsEnabled(consoleNode)) 
-            {
-                string severityString = GetValue(consoleNode, "LogLevel", null);
-                LogMessage.SeverityType severity = ParseSeverity(severityString);
+            if(IsEnabled(consoleNode)) {
+                var severityString = GetValue(consoleNode, "LogLevel", null);
+                var severity = ParseSeverity(severityString);
                 appenders.Add(CreateConsoleAppender(severity));
             }
 
-            XmlNode fileNode = config.SelectSingleNode("//File");
+            var fileNode = config.SelectSingleNode("//File");
 
-            if(IsEnabled(fileNode)) 
-            {
-                string severityString = GetValue(fileNode, "LogLevel", null);
-                LogMessage.SeverityType severity = ParseSeverity(severityString);
-                string filename = GetValue(fileNode, "Filename", DefaultLogFileName);
-                string maximumFileSize = GetValue(fileNode, "MaximumFileSize", DefaultMaximumFileSize);
+            if(IsEnabled(fileNode)) {
+                var severityString = GetValue(fileNode, "LogLevel", null);
+                var severity = ParseSeverity(severityString);
+                var filename = GetValue(fileNode, "Filename", DefaultLogFileName);
+                var maximumFileSize = GetValue(fileNode, "MaximumFileSize", DefaultMaximumFileSize);
                 appenders.Add(CreateRollingFileAppender(severity, filename, maximumFileSize));
             }
 
@@ -116,49 +100,41 @@ namespace VersionOne.ServiceHost.Core.Logging
         }
 
         /// <summary>
-        /// Decide whether current appender is enabled, true by default in case of existing node.
+        ///   Decide whether current appender is enabled, true by default in case of existing node.
         /// </summary>
-        private bool IsEnabled(XmlNode node) 
-        {
-            if(node == null) 
-            {
+        private bool IsEnabled(XmlNode node) {
+            if(node == null) {
                 return false;
             }
 
-            XmlAttribute enabledAttribute = node.Attributes[EnabledAttribute];
+            var enabledAttribute = node.Attributes[EnabledAttribute];
 
-            int enabled = 0;
+            int enabled;
             return enabledAttribute == null || (int.TryParse(enabledAttribute.Value, out enabled) && enabled != 0);
         }
 
-        private LogMessage.SeverityType ParseSeverity(string severity) 
-        {
-            if(string.IsNullOrEmpty(severity) || !Enum.IsDefined(typeof(LogMessage.SeverityType), severity)) 
-            {
+        private LogMessage.SeverityType ParseSeverity(string severity) {
+            if(string.IsNullOrEmpty(severity) || !Enum.IsDefined(typeof(LogMessage.SeverityType), severity)) {
                 return DefaultSeverity;
             }
 
-            return (LogMessage.SeverityType) Enum.Parse(typeof(LogMessage.SeverityType), severity);
+            return (LogMessage.SeverityType)Enum.Parse(typeof(LogMessage.SeverityType), severity);
         }
 
-        private string GetValue(XmlNode node, string childNodeName, string defaultValue) 
-        {
-            XmlNode childNode = node.SelectSingleNode(childNodeName);
-            
-            if(childNode != null) 
-            {
+        private string GetValue(XmlNode node, string childNodeName, string defaultValue) {
+            var childNode = node.SelectSingleNode(childNodeName);
+
+            if(childNode != null) {
                 return childNode.InnerText;
             }
 
             return null;
         }
 
-        private void ConfigureLogger(IEnumerable<IAppender> appenders) 
-        {
-            Log4netLogger root = ((Hierarchy)LogManager.GetRepository()).Root;
+        private void ConfigureLogger(IEnumerable<IAppender> appenders) {
+            var root = ((Hierarchy)LogManager.GetRepository()).Root;
 
-            foreach(IAppender appender in appenders) 
-            {
+            foreach(var appender in appenders) {
                 root.AddAppender(appender);
             }
             DisableHibernateLogging(root);
@@ -166,10 +142,9 @@ namespace VersionOne.ServiceHost.Core.Logging
             root.Repository.Configured = true;
         }
 
-        private static void SetLevel(string loggerName, string levelName)
-        {
+        private static void SetLevel(string loggerName, string levelName) {
             var log = LogManager.GetLogger(loggerName);
-            var logger = (log4net.Repository.Hierarchy.Logger)log.Logger;
+            var logger = (Log4netLogger)log.Logger;
             logger.Level = logger.Hierarchy.LevelMap[levelName];
         }
 
@@ -178,16 +153,13 @@ namespace VersionOne.ServiceHost.Core.Logging
             SetLevel("NHibernate.SQL", "Error");
         }
 
-        private IAppender CreateConsoleAppender(LogMessage.SeverityType severity) 
-        {
-            ColoredConsoleAppender appender = new ColoredConsoleAppender();
-            appender.AddMapping(new ColoredConsoleAppender.LevelColors
-            {
+        private IAppender CreateConsoleAppender(LogMessage.SeverityType severity) {
+            var appender = new ColoredConsoleAppender();
+            appender.AddMapping(new ColoredConsoleAppender.LevelColors {
                 ForeColor = ColoredConsoleAppender.Colors.Red,
                 Level = Level.Error,
             });
-            appender.AddMapping(new ColoredConsoleAppender.LevelColors
-            {
+            appender.AddMapping(new ColoredConsoleAppender.LevelColors {
                 ForeColor = ColoredConsoleAppender.Colors.Green,
                 Level = Level.Debug,
             });
@@ -203,30 +175,28 @@ namespace VersionOne.ServiceHost.Core.Logging
 
             var filter = new LoggerMatchFilter {AcceptOnMatch = false, LoggerToMatch = "NHibernate"};
             appender.AddFilter(filter);
-            filter = new LoggerMatchFilter { AcceptOnMatch = false, LoggerToMatch = "NHibernate.SQL" };
+            filter = new LoggerMatchFilter {AcceptOnMatch = false, LoggerToMatch = "NHibernate.SQL"};
             appender.AddFilter(filter);
 
             return appender;
         }
 
-        private IAppender CreateRollingFileAppender(LogMessage.SeverityType severity, string filename, string maxFileSize) 
-        {
-            RollingFileAppender appender = new RollingFileAppender();
-            appender.Layout = new PatternLayout(LogPattern);
-            appender.Name = "File";
-            appender.Threshold = TranslateLevel(severity);
-            appender.AppendToFile = true;
-            appender.File = filename;
-            appender.MaximumFileSize = maxFileSize;
+        private IAppender CreateRollingFileAppender(LogMessage.SeverityType severity, string filename, string maxFileSize) {
+            var appender = new RollingFileAppender {
+                Layout = new PatternLayout(LogPattern),
+                Name = "File",
+                Threshold = TranslateLevel(severity),
+                AppendToFile = true,
+                File = filename,
+                MaximumFileSize = maxFileSize
+            };
             appender.ActivateOptions();
 
             return appender;
         }
 
-        protected Level TranslateLevel(LogMessage.SeverityType severity) 
-        {
-            switch (severity) 
-            {
+        protected static Level TranslateLevel(LogMessage.SeverityType severity) {
+            switch(severity) {
                 case LogMessage.SeverityType.Debug:
                     return Level.Debug;
                 case LogMessage.SeverityType.Info:

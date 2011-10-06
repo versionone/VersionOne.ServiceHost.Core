@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Xml;
-using VersionOne.ServiceHost.HostedServices;
+using VersionOne.ServiceHost.Core.Services;
 
 namespace VersionOne.ServiceHost
 {

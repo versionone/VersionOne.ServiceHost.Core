@@ -1,4 +1,6 @@
-﻿namespace VersionOne.ServiceHost.Core {
+﻿using Ninject;
+
+namespace VersionOne.ServiceHost.Core {
     public class CommonModeFactory {
         private static CommonModeFactory instance;
 
@@ -6,8 +8,9 @@
             get { return instance ?? (instance = new CommonModeFactory()); }
         }
 
-        public CommonMode CreateStartup() {
-            var starter = new CommonMode();
+        public CommonMode CreateStartup(IKernel container) {
+            var starter = container.Get<CommonMode>();
+            //var starter = new CommonMode();
             starter.Initialize();
             return starter;
         }
