@@ -98,6 +98,7 @@
     <Compile Include="ServicesConfigurationHandler.cs" />
     <Compile Include="Services\FolderBatchProcessorService.cs" />
     <Compile Include="Services\FolderProcessorService.cs" />
+    <Compile Include="Services\IDependecyCreator.cs" />
     <Compile Include="Services\IHostedService.cs" />
     <Compile Include="Services\TimePublisherService.cs" />
     <Compile Include="Services\V1WriterServiceBase.cs" />
