@@ -109,6 +109,7 @@
     <Compile Include="StartupValidation\IValidationStep.cs" />
     <Compile Include="StartupValidation\ISimpleValidator.cs" />
     <Compile Include="StartupValidation\IValidator.cs" />
+    <Compile Include="StartupValidation\NonStrictValidationSimpleStep.cs" />
     <Compile Include="StartupValidation\StartupCheckerBase.cs" />
     <Compile Include="StartupValidation\ValidationException.cs" />
     <Compile Include="StartupValidation\ValidationResult.cs" />
