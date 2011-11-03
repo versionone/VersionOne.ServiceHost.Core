@@ -79,6 +79,7 @@
       <Link>Properties\AssemblyInfoProduct.cs</Link>
     </Compile>
     <Compile Include="CommonModeFactory.cs" />
+    <Compile Include="ContainerBasedFactory.cs" />
     <Compile Include="ModeBase.cs" />
     <Compile Include="CommonMode.cs" />
     <Compile Include="ComponentRepository.cs" />
