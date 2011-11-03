@@ -1,7 +1,6 @@
 using System;
 using System.Timers;
 using System.Xml;
-using Ninject;
 using VersionOne.Profile;
 using VersionOne.ServiceHost.Eventing;
 using VersionOne.ServiceHost.Core.Logging;
@@ -27,9 +26,10 @@ namespace VersionOne.ServiceHost.Core.Services {
             publishtype = Type.GetType(config["PublishClass"].InnerText);
             eventmanager = eventManager;
             eventmanager.Subscribe(typeof(ServiceHostState), HostStateChanged);
-
             logger = new Logger(eventManager);
+        }
 
+        public void Start() {
             timer = new Timer(interval) {Enabled = false};
             timer.Elapsed += Timer_Elapsed;
         }

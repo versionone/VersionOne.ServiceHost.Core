@@ -1,6 +1,5 @@
 using System;
 using System.Xml;
-using Ninject;
 using VersionOne.Profile;
 using VersionOne.ServiceHost.Core.Services;
 using VersionOne.ServiceHost.Eventing;
@@ -19,6 +18,10 @@ namespace VersionOne.ServiceHost.Core {
             monitor = new FileMonitor(profile, config["Watch"].InnerText, config["Filter"].InnerText, Process);
             eventManager = manager;
             eventManager.Subscribe(EventSinkType, monitor.ProcessFolder);
+        }
+
+        public void Start() {
+            // TODO move subscriptions to timer events, etc. here
         }
 
         private void Process(string file) {

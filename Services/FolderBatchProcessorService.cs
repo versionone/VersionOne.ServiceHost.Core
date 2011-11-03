@@ -27,6 +27,10 @@ namespace VersionOne.ServiceHost.Core {
             this.eventManager.Subscribe(EventSinkType, monitor.ProcessFolder);
         }
 
+        public void Start() {
+            // TODO move subscriptions to timer events, etc. here
+        }
+
         private void Process(string[] files) {
             ILogger logger = new Logger(EventManager);
 

@@ -2,12 +2,12 @@
 
 namespace VersionOne.ServiceHost.Core {
     public class ModeBase {
-        protected readonly IKernel Container;
+        private readonly IKernel container;
         protected readonly CommonMode Starter;
 
         protected ModeBase() {
-            Container = new StandardKernel();
-            Starter = CommonModeFactory.Instance.CreateStartup(Container);
+            container = new StandardKernel();
+            Starter = CommonModeFactory.CreateStartup(container);
         }
     }
 }

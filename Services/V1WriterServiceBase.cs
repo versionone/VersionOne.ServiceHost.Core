@@ -37,6 +37,10 @@ namespace VersionOne.ServiceHost.Core.Services {
             Logger = new Logger(eventManager);
         }
 
+        public void Start() {
+            // TODO move subscriptions to timer events, etc. here
+        }
+
         protected abstract IEnumerable<NeededAssetType> NeededAssetTypes { get; }
 
         protected void VerifyMeta() {

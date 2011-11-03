@@ -7,6 +7,7 @@ using VersionOne.Profile;
 using VersionOne.ServiceHost.Core;
 using VersionOne.ServiceHost.Core.Eventing;
 using VersionOne.ServiceHost.Core.Logging;
+using VersionOne.ServiceHost.Core.Services;
 using VersionOne.ServiceHost.Eventing;
 
 namespace VersionOne.ServiceHost {
@@ -15,10 +16,14 @@ namespace VersionOne.ServiceHost {
 
         private IProfileStore profileStore;
         private IList<ServiceInfo> services;
-        private IKernel container;
+        private readonly IKernel container;
 
         public IEventManager EventManager { get; private set; }
         public ILogger Logger { get; private set; }
+
+        public CommonMode(IKernel container) {
+            this.container = container;
+        }
 
         public void Initialize() {
             EventManager = new EventManager();
@@ -33,6 +38,12 @@ namespace VersionOne.ServiceHost {
             foreach(var ss in services) {
                 Logger.Log(string.Format("Initializing {0}", ss.Name));
                 ss.Service.Initialize(ss.Config, EventManager, profileStore[ss.Name]);
+
+                if(ss.Service is IComponentProvider) {
+                    ((IComponentProvider) ss.Service).RegisterComponents(container);
+                }
+
+                ss.Service.Start();
                 Logger.Log(string.Format("Initialized {0}", ss.Name));
             }
 
