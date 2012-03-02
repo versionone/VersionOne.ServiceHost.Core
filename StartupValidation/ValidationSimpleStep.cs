@@ -5,6 +5,8 @@ namespace VersionOne.ServiceHost.Core.StartupValidation {
         private readonly ISimpleResolver resolver;
         private readonly ISimpleValidator validator;
 
+        public ValidationSimpleStep(ISimpleValidator validator) : this(validator, null) {}
+
         public ValidationSimpleStep(ISimpleValidator validator, ISimpleResolver resolver) {
             this.validator = validator;
             this.resolver = resolver;
