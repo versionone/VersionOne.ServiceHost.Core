@@ -80,6 +80,7 @@
     </Compile>
     <Compile Include="CommonModeFactory.cs" />
     <Compile Include="ContainerBasedFactory.cs" />
+    <Compile Include="Cryptography\Crc32.cs" />
     <Compile Include="ModeBase.cs" />
     <Compile Include="CommonMode.cs" />
     <Compile Include="ComponentRepository.cs" />
