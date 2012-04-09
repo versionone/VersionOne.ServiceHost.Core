@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Xml;
-using Ninject;
 using VersionOne.SDK.APIClient;
 using VersionOne.ServiceHost.Eventing;
 using VersionOne.Profile;
