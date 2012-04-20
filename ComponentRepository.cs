@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace VersionOne.ServiceHost.Core {
-    //TODO remove it when we will have IoC (good IoC).
+    [Obsolete]
     public class ComponentRepository {
         private static ComponentRepository instance;
         private readonly IList<object> components = new List<object>();
@@ -15,7 +15,7 @@ namespace VersionOne.ServiceHost.Core {
         }
 
         public T Resolve<T>() where T : class {
-            return (T) components.Where(item => item is T).FirstOrDefault();
+            return (T) components.FirstOrDefault(item => item is T);
         }
 
         public void Register<T>(T component) where T : class {
@@ -23,7 +23,7 @@ namespace VersionOne.ServiceHost.Core {
                 throw new ArgumentNullException("component");
             }
 
-            var existing = components.Where(item => item is T).FirstOrDefault();
+            var existing = components.FirstOrDefault(item => item is T);
 
             if(existing != null) {
                 var index = components.IndexOf(existing);

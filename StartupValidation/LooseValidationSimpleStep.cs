@@ -1,11 +1,11 @@
 ﻿using System;
 
 namespace VersionOne.ServiceHost.Core.StartupValidation {
-    public class NonStrictValidationSimpleStep: IValidationStep {
+    public class LooseValidationSimpleStep: IValidationStep {
         private readonly ISimpleResolver resolver;
         private readonly ISimpleValidator validator;
 
-        public NonStrictValidationSimpleStep(ISimpleValidator validator, ISimpleResolver resolver) {
+        public LooseValidationSimpleStep(ISimpleValidator validator, ISimpleResolver resolver) {
             this.validator = validator;
             this.resolver = resolver;
         }
