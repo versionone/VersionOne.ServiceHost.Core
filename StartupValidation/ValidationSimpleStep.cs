@@ -16,6 +16,7 @@ namespace VersionOne.ServiceHost.Core.StartupValidation {
             if(validator == null) {
                 throw new InvalidOperationException("Cannot run the step without a validator.");
             }
+
             var isValid = validator.Validate();
 
             if(!isValid && (resolver == null || resolver != null && !resolver.Resolve())) {

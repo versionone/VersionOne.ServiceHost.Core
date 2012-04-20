@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace VersionOne.ServiceHost.Core {
-    [Obsolete]
+    [Obsolete("Replace with NInject ASAP")]
     public class ComponentRepository {
         private static ComponentRepository instance;
         private readonly IList<object> components = new List<object>();
