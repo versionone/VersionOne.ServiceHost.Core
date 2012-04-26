@@ -2,24 +2,27 @@ using System;
 
 namespace VersionOne.ServiceHost.Core.StartupValidation {
     public class ValidationSimpleStep : IValidationStep {
-        private readonly ISimpleResolver resolver;
-        private readonly ISimpleValidator validator;
+        [HasDependencies]
+        public ISimpleResolver Resolver { get; set; }
+
+        [HasDependencies]
+        public ISimpleValidator Validator { get; set; }
 
         public ValidationSimpleStep(ISimpleValidator validator) : this(validator, null) {}
 
         public ValidationSimpleStep(ISimpleValidator validator, ISimpleResolver resolver) {
-            this.validator = validator;
-            this.resolver = resolver;
+            Validator = validator;
+            Resolver = resolver;
         }
 
         public void Run() {
-            if(validator == null) {
+            if(Validator == null) {
                 throw new InvalidOperationException("Cannot run the step without a validator.");
             }
 
-            var isValid = validator.Validate();
+            var isValid = Validator.Validate();
 
-            if(!isValid && (resolver == null || resolver != null && !resolver.Resolve())) {
+            if(!isValid && (Resolver == null || Resolver != null && !Resolver.Resolve())) {
                 throw new ValidationException("Validation error during service initialization.");
             }
         }

@@ -3,25 +3,28 @@ using System.Linq;
 
 namespace VersionOne.ServiceHost.Core.StartupValidation {
     public class ValidationStep<TValidator, TValidationResult, TResolver> : IValidationStep
-            where TValidator : IValidator<TValidationResult>
+            where TValidator : class, IValidator<TValidationResult>
             where TResolver : class, IResolver<TValidationResult> {
-        private readonly TValidator validator;
-        private readonly TResolver resolver;
+        [HasDependencies]
+        public TValidator Validator { get; set; }
+
+        [HasDependencies]
+        public TResolver Resolver { get; set; }
 
         public ValidationStep(TValidator validator, TResolver resolver) {
-            this.validator = validator;
-            this.resolver = resolver;
+            Validator = validator;
+            Resolver = resolver;
         }
 
         public void Run() {
-            if(Equals(validator, default(TValidator))) {
+            if(Validator == null) {
                 throw new InvalidOperationException("Cannot run the step without a validator");
             }
 
-            var results = validator.Validate();
+            var results = Validator.Validate();
 
-            if(!results.IsValid && resolver == null || (resolver != null && !resolver.Resolve(results.Items.Select(x => x.Target).ToList()))) {
-                throw new ValidationException("Validation error during service initialization"); //TODO 
+            if(!results.IsValid && Resolver == null || (Resolver != null && !Resolver.Resolve(results.Items.Select(x => x.Target).ToList()))) {
+                throw new ValidationException("Validation error during service initialization");
             }
         }
     }

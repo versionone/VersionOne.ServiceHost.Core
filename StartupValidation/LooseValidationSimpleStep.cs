@@ -2,22 +2,26 @@
 
 namespace VersionOne.ServiceHost.Core.StartupValidation {
     public class LooseValidationSimpleStep: IValidationStep {
-        private readonly ISimpleResolver resolver;
-        private readonly ISimpleValidator validator;
+        [HasDependencies]
+        public ISimpleResolver Resolver { get; set; }
+
+        [HasDependencies]
+        public ISimpleValidator Validator { get; set; }
 
         public LooseValidationSimpleStep(ISimpleValidator validator, ISimpleResolver resolver) {
-            this.validator = validator;
-            this.resolver = resolver;
+            Validator = validator;
+            Resolver = resolver;
         }
 
         public void Run() {
-            if(validator == null) {
+            if(Validator == null) {
                 throw new InvalidOperationException("Cannot run the step without a validator.");
             }
-            var isValid = validator.Validate();
 
-            if(!isValid && resolver != null){
-                resolver.Resolve();
+            var isValid = Validator.Validate();
+
+            if(!isValid && Resolver != null){
+                Resolver.Resolve();
             }
         }
     }

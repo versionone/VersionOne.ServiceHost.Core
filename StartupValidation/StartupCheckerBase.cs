@@ -4,14 +4,12 @@ using VersionOne.ServiceHost.Eventing;
 namespace VersionOne.ServiceHost.Core.StartupValidation {
     public abstract class StartupCheckerBase {
         private readonly IEventManager eventManager;
-        private readonly DependencyInjector dependencyInjector;
+        private readonly IDependencyInjector dependencyInjector;
 
-        protected StartupCheckerBase(IEventManager eventManager, DependencyInjector dependencyInjector) {
+        protected StartupCheckerBase(IEventManager eventManager, IDependencyInjector dependencyInjector) {
             this.eventManager = eventManager;
             this.dependencyInjector = dependencyInjector;
         }
-
-        protected StartupCheckerBase(IEventManager eventManager) : this(eventManager, null) { }
 
         public void Initialize() {
             eventManager.Subscribe(typeof(ServiceHostState), Run);
@@ -25,7 +23,7 @@ namespace VersionOne.ServiceHost.Core.StartupValidation {
             var steps = CreateValidators();
 
             foreach(var step in steps) {
-                // TODO inject dependencies
+                dependencyInjector.Inject(step);
                 step.Run();
             }
 

@@ -82,6 +82,8 @@
     <Compile Include="ContainerBasedFactory.cs" />
     <Compile Include="Cryptography\Crc32.cs" />
     <Compile Include="DependencyInjector.cs" />
+    <Compile Include="HasDependenciesAttribute.cs" />
+    <Compile Include="IDependencyInjector.cs" />
     <Compile Include="ModeBase.cs" />
     <Compile Include="CommonMode.cs" />
     <Compile Include="ComponentRepository.cs" />

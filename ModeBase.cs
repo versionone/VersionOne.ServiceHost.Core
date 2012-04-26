@@ -8,6 +8,8 @@ namespace VersionOne.ServiceHost.Core {
         protected ModeBase() {
             container = new StandardKernel();
             Starter = CommonModeFactory.CreateStartup(container);
+
+            container.Bind<IDependencyInjector>().ToConstant(new DependencyInjector(container)).InSingletonScope();
         }
     }
 }
