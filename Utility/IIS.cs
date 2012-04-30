@@ -2,351 +2,340 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.DirectoryServices;
-using System.Text;
 
-namespace VersionOne.IIS
-{
-	public abstract class IISObject
-	{
-		private static IDictionary<string, IISObject> _map = new Dictionary<string, IISObject>();
+namespace VersionOne.IIS {
+    public abstract class IISObject {
+        private static IDictionary<string, IISObject> _map = new Dictionary<string, IISObject>();
 
-		private string _path;
-		protected string Path { get { return _path; } }
+        private string _path;
 
-		public string Name
-		{
-			get
-			{
-				string[] parts = _path.Split('/');
-				return parts[parts.Length - 1];
-			}
-		}
+        protected string Path {
+            get { return _path; }
+        }
 
-		private IDictionary _properties = new Hashtable();
-		private IDictionary Properties { get { return _properties; } }
+        public string Name {
+            get {
+                string[] parts = _path.Split('/');
+                return parts[parts.Length - 1];
+            }
+        }
 
-		private bool _haschanged;
-		public bool HasChanged { get { return _haschanged; } }
+        private IDictionary _properties = new Hashtable();
 
-		public IISObject(string path)
-		{
-			_path = path;
-			_map[path] = this;
-		}
+        private IDictionary Properties {
+            get { return _properties; }
+        }
 
-		public void AcceptChanges()
-		{
-			if (HasChanged)
-			{
-				using (DirectoryEntry entry = new DirectoryEntry(_path))
-				{
-					foreach (DictionaryEntry propentry in Properties)
-						entry.InvokeSet((string)propentry.Key, propentry.Value);
-					entry.CommitChanges();
-				}
-			}
-		}
+        private bool _haschanged;
 
-		public void RejectChanges()
-		{
-			Properties.Clear();
-			_haschanged = false;
-		}
+        public bool HasChanged {
+            get { return _haschanged; }
+        }
 
-		protected T Create<T>(string name, string type) where T : IISObject
-		{
-			using (DirectoryEntry entry = new DirectoryEntry(_path))
-				using (DirectoryEntry e = entry.Children.Add(name, type))
-					e.CommitChanges();
-			return GetChild<T>(name);
-		}
+        public IISObject(string path) {
+            _path = path;
+            _map[path] = this;
+        }
 
-		protected T GetProperty<T>(string name)
-		{
-			object value = Properties[name];
-			if (value == null)
-			{
-				using (DirectoryEntry entry = new DirectoryEntry(_path))
-					value = Properties[name] = entry.InvokeGet(name);
-			}
-			return (T)value;
-		}
+        public void AcceptChanges() {
+            if (HasChanged) {
+                using (DirectoryEntry entry = new DirectoryEntry(_path)) {
+                    foreach (DictionaryEntry propentry in Properties)
+                        entry.InvokeSet((string) propentry.Key, propentry.Value);
+                    entry.CommitChanges();
+                }
+            }
+        }
 
-		protected void SetProperty<T>(string name, T value)
-		{
-			T v = GetProperty<T>(name);
-			if (!v.Equals(value))
-			{
-				Properties[name] = value;
-				_haschanged = true;
-			}
-		}
+        public void RejectChanges() {
+            Properties.Clear();
+            _haschanged = false;
+        }
 
-		protected void Execute(string method)
-		{
-			using (DirectoryEntry entry = new DirectoryEntry(_path))
-				entry.Invoke(method, null);
-		}
+        protected T Create<T>(string name, string type) where T : IISObject {
+            using (DirectoryEntry entry = new DirectoryEntry(_path))
+            using (DirectoryEntry e = entry.Children.Add(name, type))
+                e.CommitChanges();
+            return GetChild<T>(name);
+        }
 
-		protected object Execute(string method, params object[] args)
-		{
-			using (DirectoryEntry entry = new DirectoryEntry(_path))
-				return entry.Invoke(method, args);
-		}
+        protected T GetProperty<T>(string name) {
+            object value = Properties[name];
+            if (value == null) {
+                using (DirectoryEntry entry = new DirectoryEntry(_path))
+                    value = Properties[name] = entry.InvokeGet(name);
+            }
+            return (T) value;
+        }
 
-		protected T GetChild<T>(string name) where T : IISObject
-		{
-			string fullpath = Path + "/" + name;
-			if (DirectoryEntry.Exists(fullpath))
-				return GetNode<T>(fullpath);
-			return null;
-		}
+        protected void SetProperty<T>(string name, T value) {
+            T v = GetProperty<T>(name);
+            if (!v.Equals(value)) {
+                Properties[name] = value;
+                _haschanged = true;
+            }
+        }
 
-		protected T GetParent<T>() where T : IISObject
-		{
-			string[] parts = _path.Split('/');
-			string path = string.Join("/", parts, 0, parts.Length - 1);
-			return GetNode<T>(path);
-		}
+        protected void Execute(string method) {
+            using (DirectoryEntry entry = new DirectoryEntry(_path))
+                entry.Invoke(method, null);
+        }
 
-		private static T GetNode<T>(string fullpath) where T : IISObject
-		{
-			IISObject v;
-			if (!_map.TryGetValue(fullpath, out v))
-				v = (T)Activator.CreateInstance(typeof(T), new object[] { fullpath });
-			return (T)v;
-		}
+        protected object Execute(string method, params object[] args) {
+            using (DirectoryEntry entry = new DirectoryEntry(_path))
+                return entry.Invoke(method, args);
+        }
 
-		protected IDictionary<string, T> GetChildren<T>(string type) where T : IISObject
-		{
-			IDictionary<string, T> results = new Dictionary<string, T>();
+        protected T GetChild<T>(string name) where T : IISObject {
+            string fullpath = Path + "/" + name;
+            if (DirectoryEntry.Exists(fullpath))
+                return GetNode<T>(fullpath);
+            return null;
+        }
 
-			using (DirectoryEntry entry = new DirectoryEntry(_path))
-			{
-				foreach (DirectoryEntry child in entry.Children)
-				using (child)
-					if (child.SchemaClassName == type)
-						results.Add(child.Name, GetChild<T>(child.Name));
-			}
+        protected T GetParent<T>() where T : IISObject {
+            string[] parts = _path.Split('/');
+            string path = string.Join("/", parts, 0, parts.Length - 1);
+            return GetNode<T>(path);
+        }
 
-			return results;
-		}
-	}
+        private static T GetNode<T>(string fullpath) where T : IISObject {
+            IISObject v;
+            if (!_map.TryGetValue(fullpath, out v))
+                v = (T) Activator.CreateInstance(typeof (T), new object[] {fullpath});
+            return (T) v;
+        }
 
-	public class IISComputer : IISObject
-	{
-		private IISWebService _webservice;
-		public IISWebService WebService
-		{
-			get
-			{
-				if (_webservice == null)
-					_webservice = GetChild<IISWebService>("W3SVC");
-				return _webservice;
-			}
-		}
+        protected IDictionary<string, T> GetChildren<T>(string type) where T : IISObject {
+            IDictionary<string, T> results = new Dictionary<string, T>();
 
-		public IISComputer() : this("localhost") { }
-		public IISComputer(string servername) : base("IIS://" + servername) { }
-	}
+            using (DirectoryEntry entry = new DirectoryEntry(_path)) {
+                foreach (DirectoryEntry child in entry.Children)
+                    using (child)
+                        if (child.SchemaClassName == type)
+                            results.Add(child.Name, GetChild<T>(child.Name));
+            }
 
-	public class IISWebService : IISObject
-	{
-		public IISWebService(string path) : base(path) { }
+            return results;
+        }
+    }
 
-		public IISComputer Computer { get { return GetParent<IISComputer>(); } }
+    public class IISComputer : IISObject {
+        private IISWebService _webservice;
 
-		private IDictionary<string, IISWebServer> _webservers;
-		private IDictionary<string, IISWebServer> WebServersDict
-		{
-			get
-			{
-				if (_webservers == null)
-					_webservers = GetChildren<IISWebServer>("IIsWebServer");
-				return _webservers;
-			}
-		}
+        public IISWebService WebService {
+            get {
+                if (_webservice == null)
+                    _webservice = GetChild<IISWebService>("W3SVC");
+                return _webservice;
+            }
+        }
 
-		public ICollection<IISWebServer> WebServers { get { return WebServersDict.Values; } }
+        public IISComputer() : this("localhost") {}
+        public IISComputer(string servername) : base("IIS://" + servername) {}
+    }
 
-		private IISApplicationPools _apppools;
-		public IISApplicationPools AppPools
-		{
-			get
-			{
-				if (_apppools == null)
-					_apppools = GetChild<IISApplicationPools>("AppPools");
-				return _apppools;
-			}
-		}
-	}
+    public class IISWebService : IISObject {
+        public IISWebService(string path) : base(path) {}
 
-	public class IISApplicationPools : IISObject
-	{
-		public IISApplicationPools(string path) : base(path) { }
+        public IISComputer Computer {
+            get { return GetParent<IISComputer>(); }
+        }
 
-		public IISWebService WebService { get { return GetParent<IISWebService>(); } }
+        private IDictionary<string, IISWebServer> _webservers;
 
-		private IDictionary<string, IISApplicationPool> _apppools;
-		private IDictionary<string, IISApplicationPool> AppPoolsDict
-		{
-			get
-			{
-				if (_apppools == null)
-					_apppools = GetChildren<IISApplicationPool>("IIsApplicationPool");
-				return _apppools;
-			}
-		}
+        private IDictionary<string, IISWebServer> WebServersDict {
+            get {
+                if (_webservers == null)
+                    _webservers = GetChildren<IISWebServer>("IIsWebServer");
+                return _webservers;
+            }
+        }
 
-		public ICollection<IISApplicationPool> AppPools { get { return AppPoolsDict.Values; } }
+        public ICollection<IISWebServer> WebServers {
+            get { return WebServersDict.Values; }
+        }
 
-		public IISApplicationPool GetApplicationPool(string name)
-		{
-			IISApplicationPool pool;
-			AppPoolsDict.TryGetValue(name, out pool);
-			return pool;
-		}
+        private IISApplicationPools _apppools;
 
-		public IISApplicationPool AddApplicationPool(string name)
-		{
-			IISApplicationPool apppool = GetApplicationPool(name);
-			if (apppool == null)
-			{
-				apppool = Create<IISApplicationPool>(name, "IIsApplicationPool");
-				AppPoolsDict.Add(name, apppool);
-			}
-			return apppool;
-		}
-	}
+        public IISApplicationPools AppPools {
+            get {
+                if (_apppools == null)
+                    _apppools = GetChild<IISApplicationPools>("AppPools");
+                return _apppools;
+            }
+        }
+    }
 
-	public class IISApplicationPool : IISObject
-	{
-		public IISApplicationPool(string path) : base(path) { }
+    public class IISApplicationPools : IISObject {
+        public IISApplicationPools(string path) : base(path) {}
 
-		public IISApplicationPools AppPools { get { return GetParent<IISApplicationPools>(); } }
+        public IISWebService WebService {
+            get { return GetParent<IISWebService>(); }
+        }
 
-		public int PeriodicRestartMemory
-		{
-			get { return GetProperty<int>("PeriodicRestartMemory"); }
-			set { SetProperty("PeriodicRestartMemory", value); }
-		}
-		public int PeriodicRestartPrivateMemory
-		{
-			get { return GetProperty<int>("PeriodicRestartPrivateMemory"); }
-			set { SetProperty("PeriodicRestartPrivateMemory", value); }
-		}
+        private IDictionary<string, IISApplicationPool> _apppools;
 
-		public void Start()
-		{
-			Execute("Start");
-		}
+        private IDictionary<string, IISApplicationPool> AppPoolsDict {
+            get {
+                if (_apppools == null)
+                    _apppools = GetChildren<IISApplicationPool>("IIsApplicationPool");
+                return _apppools;
+            }
+        }
 
-		public void Stop()
-		{
-			Execute("Stop");
-		}
+        public ICollection<IISApplicationPool> AppPools {
+            get { return AppPoolsDict.Values; }
+        }
 
-		public void Recycle()
-		{
-			Execute("Recycle");
-		}
-	}
+        public IISApplicationPool GetApplicationPool(string name) {
+            IISApplicationPool pool;
+            AppPoolsDict.TryGetValue(name, out pool);
+            return pool;
+        }
 
-	public class IISWebServer : IISObject
-	{
-		public IISWebServer(string path) : base(path) { }
+        public IISApplicationPool AddApplicationPool(string name) {
+            IISApplicationPool apppool = GetApplicationPool(name);
+            if (apppool == null) {
+                apppool = Create<IISApplicationPool>(name, "IIsApplicationPool");
+                AppPoolsDict.Add(name, apppool);
+            }
+            return apppool;
+        }
+    }
 
-		public IISWebService WebService { get { return GetParent<IISWebService>(); } }
+    public class IISApplicationPool : IISObject {
+        public IISApplicationPool(string path) : base(path) {}
 
-		private IDictionary<string, IISRootWebVirtualDir> _virtualdirs;
-		private IDictionary<string, IISRootWebVirtualDir> VirtualDirsDict
-		{
-			get
-			{
-				if (_virtualdirs == null)
-					_virtualdirs = GetChildren<IISRootWebVirtualDir>("IIsWebVirtualDir");
-				return _virtualdirs;
-			}
-		}
+        public IISApplicationPools AppPools {
+            get { return GetParent<IISApplicationPools>(); }
+        }
 
-		public string ServerBindings { get { return GetProperty<string>("ServerBindings"); } }
+        public int PeriodicRestartMemory {
+            get { return GetProperty<int>("PeriodicRestartMemory"); }
+            set { SetProperty("PeriodicRestartMemory", value); }
+        }
 
-		public string HostName
-		{
-			get
-			{
-				string[] parts = ServerBindings.Split(':');
-				string host = "localhost";
-				if (parts[2] != string.Empty)
-					host = parts[2];
-				return host;
-			}
-		}
+        public int PeriodicRestartPrivateMemory {
+            get { return GetProperty<int>("PeriodicRestartPrivateMemory"); }
+            set { SetProperty("PeriodicRestartPrivateMemory", value); }
+        }
 
-		public int Port
-		{
-			get
-			{
-				string[] parts = ServerBindings.Split(':');
-				string port = "80";
-				if (parts[1] != string.Empty)
-					port = parts[1];
-				return int.Parse(port);
-			}
-		}
+        public void Start() {
+            Execute("Start");
+        }
 
-		public string Url
-		{
-			get
-			{
-				string url = "http://" + HostName;
-				if (Port != 80)
-					url += ":" + Port;
-				return url;
-			}
-		}
+        public void Stop() {
+            Execute("Stop");
+        }
 
-		public ICollection<IISRootWebVirtualDir> VirtualDirs { get { return VirtualDirsDict.Values; } }
-	}
+        public void Recycle() {
+            Execute("Recycle");
+        }
+    }
 
-	public class IISWebVirtualDir : IISObject
-	{
-		public IISWebVirtualDir(string path) : base(path) { }
-		public IISWebVirtualDir ParentDir { get { return GetParent<IISWebVirtualDir>(); } }
-		public virtual bool IsRoot { get { return false; } }
+    public class IISWebServer : IISObject {
+        public IISWebServer(string path) : base(path) {}
 
-		private IDictionary<string, IISWebVirtualDir> _virtualdirs;
-		private IDictionary<string, IISWebVirtualDir> VirtualDirsDict
-		{
-			get
-			{
-				if (_virtualdirs == null)
-					_virtualdirs = GetChildren<IISWebVirtualDir>("IIsWebVirtualDir");
-				return _virtualdirs;
-			}
-		}
+        public IISWebService WebService {
+            get { return GetParent<IISWebService>(); }
+        }
 
-		public ICollection<IISWebVirtualDir> VirtualDirs { get { return VirtualDirsDict.Values; } }
+        private IDictionary<string, IISRootWebVirtualDir> _virtualdirs;
 
-		public string AppPoolID
-		{
-			get { return GetProperty<string>("AppPoolID"); }
-			set { SetProperty("AppPoolID", value); }
-		}
+        private IDictionary<string, IISRootWebVirtualDir> VirtualDirsDict {
+            get {
+                if (_virtualdirs == null)
+                    _virtualdirs = GetChildren<IISRootWebVirtualDir>("IIsWebVirtualDir");
+                return _virtualdirs;
+            }
+        }
 
-		public IISWebVirtualDir GetVirtualDir(string instancename)
-		{
-			IISWebVirtualDir instance;
-			if (VirtualDirsDict.TryGetValue(instancename, out instance))
-				return instance;
-			return null;
-		}
-	}
+        public string ServerBindings {
+            get { return GetProperty<string>("ServerBindings"); }
+        }
 
-	public class IISRootWebVirtualDir : IISWebVirtualDir
-	{
-		public override bool IsRoot { get { return true; } }
-		public IISWebServer WebServer { get { return GetParent<IISWebServer>(); } }
-		public IISRootWebVirtualDir(string path) : base(path) { }
-	}
+        public string HostName {
+            get {
+                string[] parts = ServerBindings.Split(':');
+                string host = "localhost";
+                if (parts[2] != string.Empty)
+                    host = parts[2];
+                return host;
+            }
+        }
+
+        public int Port {
+            get {
+                string[] parts = ServerBindings.Split(':');
+                string port = "80";
+                if (parts[1] != string.Empty)
+                    port = parts[1];
+                return int.Parse(port);
+            }
+        }
+
+        public string Url {
+            get {
+                string url = "http://" + HostName;
+                if (Port != 80)
+                    url += ":" + Port;
+                return url;
+            }
+        }
+
+        public ICollection<IISRootWebVirtualDir> VirtualDirs {
+            get { return VirtualDirsDict.Values; }
+        }
+    }
+
+    public class IISWebVirtualDir : IISObject {
+        public IISWebVirtualDir(string path) : base(path) {}
+
+        public IISWebVirtualDir ParentDir {
+            get { return GetParent<IISWebVirtualDir>(); }
+        }
+
+        public virtual bool IsRoot {
+            get { return false; }
+        }
+
+        private IDictionary<string, IISWebVirtualDir> _virtualdirs;
+
+        private IDictionary<string, IISWebVirtualDir> VirtualDirsDict {
+            get {
+                if (_virtualdirs == null)
+                    _virtualdirs = GetChildren<IISWebVirtualDir>("IIsWebVirtualDir");
+                return _virtualdirs;
+            }
+        }
+
+        public ICollection<IISWebVirtualDir> VirtualDirs {
+            get { return VirtualDirsDict.Values; }
+        }
+
+        public string AppPoolID {
+            get { return GetProperty<string>("AppPoolID"); }
+            set { SetProperty("AppPoolID", value); }
+        }
+
+        public IISWebVirtualDir GetVirtualDir(string instancename) {
+            IISWebVirtualDir instance;
+            if (VirtualDirsDict.TryGetValue(instancename, out instance))
+                return instance;
+            return null;
+        }
+    }
+
+    public class IISRootWebVirtualDir : IISWebVirtualDir {
+        public override bool IsRoot {
+            get { return true; }
+        }
+
+        public IISWebServer WebServer {
+            get { return GetParent<IISWebServer>(); }
+        }
+
+        public IISRootWebVirtualDir(string path) : base(path) {}
+    }
 }
