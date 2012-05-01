@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Ninject;
 using VersionOne.ServiceHost.Core.Logging;
 using VersionOne.ServiceHost.Eventing;
 
@@ -10,7 +9,6 @@ namespace VersionOne.ServiceHost.Core.Eventing {
 
         private readonly ILogger logger;
 
-        [Inject]
         public EventManager() {
             logger = new Logger(this);
         }
