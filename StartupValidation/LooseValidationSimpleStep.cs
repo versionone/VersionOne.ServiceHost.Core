@@ -1,6 +1,7 @@
 ﻿using System;
 
 namespace VersionOne.ServiceHost.Core.StartupValidation {
+    // TODO relax message severity in validators when using this kind of step. Application can start, thus it is not errors.
     public class LooseValidationSimpleStep: IValidationStep {
         [HasDependencies]
         public ISimpleResolver Resolver { get; set; }

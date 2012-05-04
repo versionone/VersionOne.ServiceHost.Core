@@ -2,6 +2,7 @@
 using Ninject.Parameters;
 
 namespace VersionOne.ServiceHost.Core {
+    // TODO factory hierarchy is overly complex and unnecessary
     public abstract class ContainerBasedFactory {
         protected readonly IKernel Container;
 
