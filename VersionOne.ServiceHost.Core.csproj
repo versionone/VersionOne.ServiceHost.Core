@@ -79,7 +79,7 @@
       <Link>Properties\AssemblyInfoProduct.cs</Link>
     </Compile>
     <Compile Include="CommonModeFactory.cs" />
-    <Compile Include="ContainerBasedFactory.cs" />
+    <Compile Include="DependencyProviderFactory.cs" />
     <Compile Include="Cryptography\Crc32.cs" />
     <Compile Include="DependencyInjector.cs" />
     <Compile Include="HasDependenciesAttribute.cs" />
