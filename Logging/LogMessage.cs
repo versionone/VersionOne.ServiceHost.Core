@@ -5,6 +5,7 @@ namespace VersionOne.ServiceHost.Core.Logging {
         public enum SeverityType {
             Debug,
             Info,
+            Warning,
             Error
         }
 

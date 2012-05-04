@@ -11,8 +11,6 @@ namespace VersionOne.ServiceHost.Core.Logging {
             this.eventManager = eventManager;
         }
 
-        #region ILogger Members
-
         public void Log(string message) {
             Log(LogMessage.SeverityType.Info, message, null);
         }
@@ -28,7 +26,5 @@ namespace VersionOne.ServiceHost.Core.Logging {
         public void Log(LogMessage.SeverityType severity, string message, Exception exception) {
             eventManager.Publish(new LogMessage(severity, message, exception));
         }
-
-        #endregion
     }
 }

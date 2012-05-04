@@ -58,6 +58,10 @@ namespace VersionOne.ServiceHost.Core.Logging {
                     Logger.Info(message.Message, message.Exception);
                     return;
 
+                case LogMessage.SeverityType.Warning:
+                    Logger.Warn(message.Message, message.Exception);
+                    break;
+
                 case LogMessage.SeverityType.Error:
                     Logger.Error(message.Message, message.Exception);
                     return;

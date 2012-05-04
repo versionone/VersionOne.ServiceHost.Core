@@ -107,6 +107,8 @@
     <Compile Include="Services\IHostedService.cs" />
     <Compile Include="Services\TimePublisherService.cs" />
     <Compile Include="Services\V1WriterServiceBase.cs" />
+    <Compile Include="StartupValidation\BaseValidationEntity.cs" />
+    <Compile Include="StartupValidation\IBaseValidationEntity.cs" />
     <Compile Include="StartupValidation\IResolver.cs" />
     <Compile Include="StartupValidation\ISimpleResolver.cs" />
     <Compile Include="StartupValidation\IValidationResult.cs" />
