@@ -51,7 +51,8 @@ namespace VersionOne.ServiceHost {
 
                 Logger.Log(LogMessage.SeverityType.Info, "End of diagnostic section.");
             } catch(Exception ex) {
-                Logger.Log(LogMessage.SeverityType.Error, "Failed to log diagnostic information.", ex);
+                Logger.Log(LogMessage.SeverityType.Error, 
+                    "Failed to log diagnostic information. This could happen if configuration is invalid or integration package is incomplete, for example, some of required DLL files are missing.", ex);
             }
         }
 
