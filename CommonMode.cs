@@ -1,10 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Reflection;
 using System.Threading;
 using Ninject;
 using VersionOne.Profile;
+using VersionOne.SDK.APIClient;
 using VersionOne.ServiceHost.Core;
+using VersionOne.ServiceHost.Core.Configuration;
 using VersionOne.ServiceHost.Core.Eventing;
 using VersionOne.ServiceHost.Core.Logging;
 using VersionOne.ServiceHost.Core.Services;
@@ -28,8 +31,23 @@ namespace VersionOne.ServiceHost {
         public void Initialize() {
             EventManager = new EventManager();
             Logger = new Logger(EventManager);
-            services = (IList<ServiceInfo>)ConfigurationManager.GetSection("Services");
+            services = (IList<ServiceInfo>) ConfigurationManager.GetSection("Services");
             profileStore = new XmlProfileStore("profile.xml");
+        }
+
+        private void LogDiagnosticInformation() {
+            Logger.Log(LogMessage.SeverityType.Info, "Diagnostic information:");
+
+            var installerInfo = (InstallerConfiguration) ConfigurationManager.GetSection("Installer");
+            Logger.Log(LogMessage.SeverityType.Info, string.Format("Installer long name: '{0}', short name: '{1}'", installerInfo.LongName, installerInfo.ShortName));
+
+            var version = Assembly.GetEntryAssembly().GetName().Version;
+            Logger.Log(LogMessage.SeverityType.Info, string.Format("ServiceHost version is {0}", version));
+
+            var sdkVersion = typeof (V1Central).Assembly.GetName().Version;
+            Logger.Log(LogMessage.SeverityType.Info, string.Format("VersionOne SDK version is {0}", sdkVersion));
+
+            Logger.Log(LogMessage.SeverityType.Info, "End of diagnostic section.");
         }
 
         public void Startup() {
@@ -48,6 +66,9 @@ namespace VersionOne.ServiceHost {
             }
 
             EventManager.Publish(ServiceHostState.Validate);
+
+            LogDiagnosticInformation();
+
             EventManager.Publish(ServiceHostState.Startup);
             EventManager.Subscribe(typeof(FlushProfile), FlushProfileImpl);
         }

@@ -128,6 +128,7 @@ namespace VersionOne.ServiceHost.Core.Logging {
             foreach(var appender in appenders) {
                 root.AddAppender(appender);
             }
+
             DisableHibernateLogging();
 
             root.Repository.Configured = true;
