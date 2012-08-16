@@ -36,18 +36,23 @@ namespace VersionOne.ServiceHost {
         }
 
         private void LogDiagnosticInformation() {
-            Logger.Log(LogMessage.SeverityType.Info, "Diagnostic information:");
+            try {
+                Logger.Log(LogMessage.SeverityType.Info, "Diagnostic information:");
 
-            var installerInfo = (InstallerConfiguration) ConfigurationManager.GetSection("Installer");
-            Logger.Log(LogMessage.SeverityType.Info, string.Format("Installer long name: '{0}', short name: '{1}'", installerInfo.LongName, installerInfo.ShortName));
+                var installerInfo = (InstallerConfiguration) ConfigurationManager.GetSection("Installer");
+                Logger.Log(LogMessage.SeverityType.Info,
+                           string.Format("    Installer long name: '{0}', short name: '{1}'", installerInfo.LongName, installerInfo.ShortName));
 
-            var version = Assembly.GetEntryAssembly().GetName().Version;
-            Logger.Log(LogMessage.SeverityType.Info, string.Format("ServiceHost version is {0}", version));
+                var version = Assembly.GetEntryAssembly().GetName().Version;
+                Logger.Log(LogMessage.SeverityType.Info, string.Format("    ServiceHost version is {0}", version));
 
-            var sdkVersion = typeof (V1Central).Assembly.GetName().Version;
-            Logger.Log(LogMessage.SeverityType.Info, string.Format("VersionOne SDK version is {0}", sdkVersion));
+                var sdkVersion = typeof (V1Central).Assembly.GetName().Version;
+                Logger.Log(LogMessage.SeverityType.Info, string.Format("    VersionOne SDK version is {0}", sdkVersion));
 
-            Logger.Log(LogMessage.SeverityType.Info, "End of diagnostic section.");
+                Logger.Log(LogMessage.SeverityType.Info, "End of diagnostic section.");
+            } catch(Exception ex) {
+                Logger.Log(LogMessage.SeverityType.Error, "Failed to log diagnostic information.", ex);
+            }
         }
 
         public void Startup() {
