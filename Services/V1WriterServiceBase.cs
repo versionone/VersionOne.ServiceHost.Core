@@ -7,11 +7,15 @@ using VersionOne.Profile;
 using VersionOne.ServiceHost.Core.Logging;
 
 namespace VersionOne.ServiceHost.Core.Services {
+    // TODO apply ServerConnector
     public abstract class V1WriterServiceBase : IHostedService {
         private ICentral central;
         protected XmlElement Config;
         protected IEventManager EventManager;
         protected ILogger Logger;
+
+        private const string MemberType = "Member";
+        private const string DefaultRoleNameProperty = "DefaultRole.Name";
 
         protected virtual ICentral Central {
             get {
@@ -20,6 +24,8 @@ namespace VersionOne.ServiceHost.Core.Services {
                         var c = new V1Central(Config["Settings"]);
                         c.Validate();
                         central = c;
+
+                        LogVersionOneConnectionInformation();
                     } catch(Exception ex) {
                         Logger.Log("Failed to connect to VersionOne server", ex);
                         throw;
@@ -30,10 +36,34 @@ namespace VersionOne.ServiceHost.Core.Services {
             }
         }
 
+        private void LogVersionOneConnectionInformation() {
+            try {
+                var metaVersion = ((MetaModel) Central.MetaModel).Version.ToString();
+                var memberOid = Central.Services.LoggedIn.Momentless.ToString();
+                var defaultRole = GetLoggedInMemberRole();
+
+                Logger.LogVersionOneConnectionInformation(LogMessage.SeverityType.Info, metaVersion, memberOid, defaultRole);
+            } catch(Exception ex) {
+                Logger.Log(LogMessage.SeverityType.Warning, "Failed to log VersionOne connection information.", ex);
+            }
+        }
+
+        private string GetLoggedInMemberRole() {
+            var query = new Query(Central.Services.LoggedIn);
+            var defaultRoleAttribute = Central.MetaModel.GetAssetType(MemberType).GetAttributeDefinition(DefaultRoleNameProperty);
+            query.Selection.Add(defaultRoleAttribute);
+
+            var asset = Central.Services.Retrieve(query).Assets[0];
+            var role = asset.GetAttribute(defaultRoleAttribute);
+            return Central.Loc.Resolve(role.Value.ToString());
+        }
+
         public virtual void Initialize(XmlElement config, IEventManager eventManager, IProfile profile) {
             Config = config;
             EventManager = eventManager;
             Logger = new Logger(eventManager);
+            
+            Logger.LogVersionOneConfiguration(LogMessage.SeverityType.Info, Config["Settings"]);
         }
 
         public void Start() {
