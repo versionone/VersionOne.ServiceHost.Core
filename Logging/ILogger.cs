@@ -1,4 +1,5 @@
 using System;
+using System.Xml;
 
 namespace VersionOne.ServiceHost.Core.Logging {
     /// <summary>
@@ -9,5 +10,8 @@ namespace VersionOne.ServiceHost.Core.Logging {
         void Log(string message, Exception exception);
         void Log(LogMessage.SeverityType severity, string message);
         void Log(LogMessage.SeverityType severity, string message, Exception exception);
+
+        void LogVersionOneConfiguration(LogMessage.SeverityType severity, XmlElement config);
+        void LogVersionOneConnectionInformation(LogMessage.SeverityType severity, string metaVersion, string memberOid, string defaultMemberRole);
     }
 }

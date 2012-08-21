@@ -97,6 +97,8 @@
     </Compile>
     <Compile Include="CommonModeFactory.cs" />
     <Compile Include="Configuration\InstallerConfiguration.cs" />
+    <Compile Include="Configuration\ProxySettings.cs" />
+    <Compile Include="Configuration\VersionOneSettings.cs" />
     <Compile Include="DependencyProviderFactory.cs" />
     <Compile Include="Cryptography\Crc32.cs" />
     <Compile Include="DependencyInjector.cs" />
