@@ -1,6 +1,8 @@
 using System;
+using System.Diagnostics;
 
 namespace VersionOne.ServiceHost.Core.Logging {
+    [DebuggerDisplay("{Stamp} [{Severity}] {Message}")]
     public class LogMessage {
         public enum SeverityType {
             Debug,

@@ -6,6 +6,7 @@ using VersionOne.ServiceHost.Core.Services;
 using VersionOne.ServiceHost.Eventing;
 using log4net;
 using log4net.Appender;
+using log4net.Config;
 using log4net.Core;
 using log4net.Filter;
 using log4net.Layout;
@@ -124,9 +125,10 @@ namespace VersionOne.ServiceHost.Core.Logging {
 
         private static void ConfigureLogger(IEnumerable<IAppender> appenders) {
             var root = ((Hierarchy)LogManager.GetRepository()).Root;
+            root.RemoveAllAppenders();
 
             foreach(var appender in appenders) {
-                root.AddAppender(appender);
+                BasicConfigurator.Configure(appender);
             }
 
             DisableHibernateLogging();
@@ -180,6 +182,7 @@ namespace VersionOne.ServiceHost.Core.Logging {
                 Threshold = TranslateLevel(severity),
                 AppendToFile = true,
                 File = filename,
+                LockingModel = new FileAppender.MinimalLock(),
                 MaximumFileSize = maxFileSize
             };
             appender.ActivateOptions();
