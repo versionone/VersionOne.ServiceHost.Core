@@ -1,6 +1,6 @@
 using System.Reflection;
 
-[assembly: AssemblyTitle("VersionOne ServiceHost Core Services")]
+//[assembly: AssemblyTitle("VersionOne ServiceHost Core Services")]
 
 #if !DEBUG
 //[assembly: AssemblyDelaySign(false)]
