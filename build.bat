@@ -1,6 +1,6 @@
 mkdir packages
-call NuGetRestorePackagesOnly.bat VersionOne.ServiceHost.Core.csproj %1
-call NuGetUpdatePackages.bat packages.config 
+call %1\NuGetRestorePackagesOnly.bat VersionOne.ServiceHost.Core.csproj %1
+call %1\NuGetUpdatePackages.bat packages.config 
 msbuild VersionOne.ServiceHost.Core.csproj ^
 /p:V1BuildToolsPath=%1 ^
 /p:NuGetExePath=%1\NuGet.exe ^
