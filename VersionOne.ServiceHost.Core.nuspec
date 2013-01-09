@@ -15,6 +15,8 @@
     <releaseNotes>Summary of changes made in this release of the package.</releaseNotes>
     -->
     <dependencies>
+        <dependency id="log4net" version="[2,3)" />
+        <dependency id="Ninject" version="[3.0.1,4)" />
         <dependency id="VersionOne.SDK.APIClient" version="[12.3.80,13)" />
     </dependencies>
     <copyright>Copyright 2008-2013</copyright>
