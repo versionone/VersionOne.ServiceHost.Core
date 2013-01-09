@@ -13,7 +13,10 @@
     <description>$description$</description>
     <!--
     <releaseNotes>Summary of changes made in this release of the package.</releaseNotes>
--->
+    -->
+    <dependencies>
+        <dependency id="VersionOne.SDK.APIClient" version="[12.3.80,13)" />
+    </dependencies>
     <copyright>Copyright 2008-2013</copyright>
     <tags>V1 VersionOne API apiclient servicehost agile</tags>
   </metadata>
