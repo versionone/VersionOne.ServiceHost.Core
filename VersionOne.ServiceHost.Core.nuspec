@@ -6,18 +6,15 @@
     <title>$title$</title>
     <authors>$author$</authors>
     <owners>$author$</owners>
-    <!--
-	Change when REPO is public:
-    <licenseUrl></licenseUrl>
+    <licenseUrl>https://github.com/versionone/VersionOne.ServiceHost.Core/blob/master/LICENSE.md</licenseUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
-    <projectUrl>https://github.com/versionone/VersionOne.SDK.NET/</projectUrl>
-    <iconUrl>file://../32px.png</iconUrl>   
--->
+    <projectUrl>https://github.com/versionone/VersionOne.ServiceHost.Core/</projectUrl>
+    <iconUrl>https://github.com/versionone/VersionOne.ServiceHost.Core/master/32px.png</iconUrl>   
     <description>$description$</description>
     <!--
     <releaseNotes>Summary of changes made in this release of the package.</releaseNotes>
 -->
-    <copyright>Copyright 2012</copyright>
+    <copyright>Copyright 2008-2013</copyright>
     <tags>V1 VersionOne API apiclient servicehost agile</tags>
   </metadata>
 </package>
