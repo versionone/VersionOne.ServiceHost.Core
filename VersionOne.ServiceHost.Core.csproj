@@ -84,7 +84,7 @@
     <Reference Include="System.DirectoryServices" />
     <Reference Include="System.Xml" />
     <Reference Include="VersionOne.SDK.APIClient">
-      <HintPath>packages\VersionOne.SDK.APIClient.12.3.80.0\lib\net40\VersionOne.SDK.APIClient.dll</HintPath>
+      <HintPath>packages\VersionOne.SDK.APIClient.12.3.123.0\lib\net40\VersionOne.SDK.APIClient.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
