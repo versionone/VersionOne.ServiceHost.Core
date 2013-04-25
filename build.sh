@@ -72,6 +72,8 @@ for D in $TOOLSDIRS; do
     export BUILDTOOLS_PATH="$D/bin"
   fi
 done
+echo $(which $BUILDTOOLS_PATH/NuGet.exe)
+echo $(which $WORKSPACE/.nuget/NuGet.exe)
 if [ ! $(which $BUILDTOOLS_PATH/NuGet.exe) ] && [ $(which $WORKSPACE/.nuget/NuGet.exe) ]; then
   export BUILDTOOLS_PATH="$WORKSPACE/.nuget"
 fi
