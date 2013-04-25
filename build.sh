@@ -161,7 +161,11 @@ done
 # ---- Clean solution ---------------------------------------------------------
 
 rm -rf $WORKSPACE/*.nupkg
-MSBuild.exe $SOLUTION_FILE -m -t:Clean
+MSBuild.exe $SOLUTION_FILE -m \
+  -t:Clean \
+  -p:Configuration="$Configuration" \
+  -p:Platform="$Platform" \
+  -p:Verbosity=Diagnostic
 
 
 
