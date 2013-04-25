@@ -127,13 +127,6 @@ function install_nuget_deps() {
 
 
 
-# ---- Clean solution ---------------------------------------------------------
-
-rm -rf $WORKSPACE/*.nupkg
-MSBuild.exe $SOLUTION_FILE /m /t:Clean
-
-
-
 # ---- Produce .NET Metadata -------------------------------------------------
 
 COMPONENTS="VersionOne.ServiceHost.Core"
@@ -147,7 +140,7 @@ using System.Resources;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyVersion("$VERSION_NUMBER.0")]
+[assembly: AssemblyVersion("$VERSION_NUMBER.$BUILD_NUMBER")]
 [assembly: AssemblyFileVersion("$VERSION_NUMBER.$BUILD_NUMBER")]
 [assembly: AssemblyInformationalVersion("See $GITHUB_WEB_URL/wiki")]
 
@@ -160,6 +153,13 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("$Configuration")]
 EOF
 done
+
+
+
+# ---- Clean solution ---------------------------------------------------------
+
+rm -rf $WORKSPACE/*.nupkg
+MSBuild.exe $SOLUTION_FILE -m -t:Clean
 
 
 
