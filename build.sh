@@ -72,8 +72,16 @@ for D in $TOOLSDIRS; do
     export BUILDTOOLS_PATH="$D/bin"
   fi
 done
+
 echo $(which $BUILDTOOLS_PATH/NuGet.exe)
 echo $(which $WORKSPACE/.nuget/NuGet.exe)
+
+if [ ! $(which $BUILDTOOLS_PATH/NuGet.exe) ] && [ -d "$WORKSPACE/.nuget" ] && [ ! $(which "$WORKSPACE/.nuget/nuget.exe") ]; then
+  # Get the latest nuget.exe
+  echo "Build is downloading the latest nuget.exe"
+  powershell -NoProfile -ExecutionPolicy unrestricted -Command "(new-object System.Net.WebClient).Downloadfile('http://nuget.org/nuget.exe', './.nuget/nuget.exe')"
+fi
+
 if [ ! $(which $BUILDTOOLS_PATH/NuGet.exe) ] && [ $(which $WORKSPACE/.nuget/NuGet.exe) ]; then
   export BUILDTOOLS_PATH="$WORKSPACE/.nuget"
 fi
@@ -168,13 +176,13 @@ MSBuild.exe $SOLUTION_FILE -m \
   -p:Verbosity=Diagnostic
 
 
+# ---- Restore packages and update them to the latest compatible versions -----
 
-# ---- Update NuGet Packages --------------------------------------------------
+echo "Build is restoring NuGet packages"
+nuget restore $SOLUTION_FILE
 
-# Suspending update
-# update_nuget_deps
-install_nuget_deps
-
+echo "Build is updating NuGet packages to latest compatible versions"
+nuget update $SOLUTION_FILE
 
 # ---- Build solution using msbuild -------------------------------------------
 
@@ -188,7 +196,6 @@ MSBuild.exe $SOLUTION_FILE \
   -p:Verbosity=Diagnostic
 
 
-
 # ---- Produce NuGet .nupkg file ----------------------------------------------------------
 
 unset Platform
@@ -197,5 +204,3 @@ NuGet.exe pack $MAIN_CSPROJ \
   -Symbols \
   -Properties Configuration="$Configuration"
 cd $WORKSPACE
-
-
