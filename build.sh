@@ -120,23 +120,6 @@ if [ -z "$BUILD_NUMBER" ]; then
   export BUILD_NUMBER=`date +%H%M`  # hour + minute
 fi
 
-function update_nuget_deps() {
-  install_nuget_deps
-  NuGet.exe update $SOLUTION_FILE -Verbose -Source $NUGET_FETCH_URL
-}
-
-function install_nuget_deps() {
-  PKGSDIRW=`winpath "$WORKSPACE/packages"`
-  for D in $WORKSPACE/*; do
-    if [ -d $D ] && [ -f $D/packages.config ]; then
-      PKGSCONFIGW=`winpath "$D/packages.config"`
-      NuGet.exe install "$PKGSCONFIGW" -o "$PKGSDIRW" -Source "$NUGET_FETCH_URL"
-    fi
-  done
-}
-
-
-
 # ---- Produce .NET Metadata -------------------------------------------------
 
 COMPONENTS="VersionOne.ServiceHost.Core"
@@ -179,10 +162,10 @@ MSBuild.exe $SOLUTION_FILE -m \
 # ---- Restore packages and update them to the latest compatible versions -----
 
 echo "Build is restoring NuGet packages"
-nuget restore $SOLUTION_FILE
+nuget restore $SOLUTION_FILE -Source $NUGET_FETCH_URL
 
 echo "Build is updating NuGet packages to latest compatible versions"
-nuget update $SOLUTION_FILE
+nuget update $SOLUTION_FILE -Source $NUGET_FETCH_URL
 
 # ---- Build solution using msbuild -------------------------------------------
 
