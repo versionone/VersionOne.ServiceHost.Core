@@ -64,6 +64,9 @@ namespace VersionOne.ServiceHost.Core.Services
                             metaService = new VersionOne.SDK.APIClient.MetaModel(metaConnector);
                             dataService = new VersionOne.SDK.APIClient.Services(metaService, dataConnector);
                             localService = new VersionOne.SDK.APIClient.Localizer(localConnector);
+
+                            Logger.Log(LogMessage.SeverityType.Info, "    OAuth credential files detected, authenticating with OAuth.");
+                            Logger.Log(LogMessage.SeverityType.Info, "    VersionOne URL: " + baseUrl);
                         }
 
                         //Use Basic|Windows.
@@ -81,6 +84,8 @@ namespace VersionOne.ServiceHost.Core.Services
                             metaService = new VersionOne.SDK.APIClient.MetaModel(metaConnector);
                             dataService = new VersionOne.SDK.APIClient.Services(metaService, dataConnector);
                             localService = new VersionOne.SDK.APIClient.Localizer(localConnector);
+
+                            Logger.LogVersionOneConfiguration(LogMessage.SeverityType.Info, Config["Settings"]);
                         }
 
                         _v1Connection = new V1Connection(metaService, dataService, localService);
@@ -137,7 +142,6 @@ namespace VersionOne.ServiceHost.Core.Services
             Config = config;
             EventManager = eventManager;
             Logger = new Logger(eventManager);
-            Logger.LogVersionOneConfiguration(LogMessage.SeverityType.Info, Config["Settings"]);
         }
 
         public void Start() 
