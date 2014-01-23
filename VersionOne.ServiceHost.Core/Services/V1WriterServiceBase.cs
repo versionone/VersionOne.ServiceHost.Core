@@ -57,9 +57,9 @@ namespace VersionOne.ServiceHost.Core.Services
 
                             string baseUrl = GetBaseURLFromJSONFile("client_secrets.json");
 
-                            V1OAuth2APIConnector metaConnector = new V1OAuth2APIConnector(baseUrl + "/meta.v1/");
-                            V1OAuth2APIConnector dataConnector = new V1OAuth2APIConnector(baseUrl + "/rest-1.oauth.v1/");
-                            V1APIConnector localConnector = new V1APIConnector(baseUrl + "/loc.v1/");
+														var metaConnector = new VersionOneAPIConnector(baseUrl + "/meta.v1/").WithOAuth2();
+														var dataConnector = new VersionOneAPIConnector(baseUrl + "/rest-1.oauth.v1/").WithOAuth2();
+														var localConnector = new VersionOneAPIConnector(baseUrl + "/loc.v1/");
 
                             metaService = new VersionOne.SDK.APIClient.MetaModel(metaConnector);
                             dataService = new VersionOne.SDK.APIClient.Services(metaService, dataConnector);
@@ -75,11 +75,18 @@ namespace VersionOne.ServiceHost.Core.Services
                             string baseUrl = Config["Settings"].SelectSingleNode("ApplicationUrl").InnerText;
                             string username = Config["Settings"].SelectSingleNode("Username").InnerText;
                             string password = Config["Settings"].SelectSingleNode("Password").InnerText;
-                            bool authType = Config["Settings"].SelectSingleNode("IntegratedAuth").InnerText == "true" ? true : false;
+                            bool useIntegratedAuth = Config["Settings"].SelectSingleNode("IntegratedAuth").InnerText == "true" ? true : false;
 
-                            V1APIConnector metaConnector = new V1APIConnector(baseUrl + "meta.v1/");
-                            V1APIConnector dataConnector = new V1APIConnector(baseUrl + "rest-1.v1/", username, password, authType);
-                            V1APIConnector localConnector = new V1APIConnector(baseUrl + "loc.v1/");
+														var metaConnector = new VersionOneAPIConnector(baseUrl + "meta.v1/");
+														VersionOneAPIConnector dataConnector;
+	                        if (useIntegratedAuth)
+		                        dataConnector =
+			                        new VersionOneAPIConnector(baseUrl + "rest-1.v1/").WithWindowsIntegratedAuthentication();
+	                        else
+		                        dataConnector =
+			                        new VersionOneAPIConnector(baseUrl + "rest-1.v1/").WithVersionOneUsernameAndPassword(
+				                        username, password);
+														var localConnector = new VersionOneAPIConnector(baseUrl + "loc.v1/");
 
                             metaService = new VersionOne.SDK.APIClient.MetaModel(metaConnector);
                             dataService = new VersionOne.SDK.APIClient.Services(metaService, dataConnector);
