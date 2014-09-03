@@ -12,8 +12,9 @@ using System.Runtime.InteropServices;
 
 [assembly: AssemblyProduct("VersionOne.ServiceHost.Core")]
 [assembly: AssemblyTitle("VersionOne.ServiceHost.Core")]
-[assembly: AssemblyDescription("VersionOne ServiceHost Core VersionOne.ServiceHost.Core Release Build")]
+[assembly: AssemblyDescription("")]
 [assembly: AssemblyCompany("VersionOne, Inc.")]
-[assembly: AssemblyCopyright("Copyright 2008-2013, VersionOne, Inc., Licensed under modified BSD.")]
+[assembly: AssemblyCopyright("Copyright 2008-2014, VersionOne, Inc. Licensed under modified BSD.")]
 
 [assembly: AssemblyConfiguration("Release")]
+[assembly: ComVisibleAttribute(false)]
