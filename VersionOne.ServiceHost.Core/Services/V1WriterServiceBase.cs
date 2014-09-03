@@ -11,7 +11,6 @@ using Newtonsoft.Json.Linq;
 
 namespace VersionOne.ServiceHost.Core.Services 
 {
-
     public class V1Connection
     {
         public readonly IMetaModel Meta;
