@@ -153,10 +153,7 @@ namespace VersionOne.ServiceHost.Core.Services
             Logger = new Logger(eventManager);
         }
 
-        public void Start() 
-        {
-            // TODO: Move subscriptions to timer events, etc. here
-        }
+        public void Start() {}
 
         protected abstract IEnumerable<NeededAssetType> NeededAssetTypes { get; }
 
