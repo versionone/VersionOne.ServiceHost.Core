@@ -35,7 +35,7 @@ namespace VersionOne.ServiceHost.Core.Services
         private const string MemberType = "Member";
         private const string DefaultRoleNameProperty = "DefaultRole.Name";
 
-        //Note that when using OAuth, the client_secrets.json and stored_credentials.json files must exist in the application folder.
+        //Note that when using OAuth, the client_secrets.json and stored_credentials.json files must exist in the application folder. 
         protected virtual V1Connection V1Connection
         {
             get
