@@ -7,9 +7,15 @@ namespace VersionOne.ServiceHost.Core.Tests
     public class UnitTest1
     {
         [TestMethod]
-        public void TestMethod1()
+        public void TestPass()
         {
             Assert.IsTrue(true);
+        }
+
+        [TestMethod]
+        public void TestFail()
+        {
+            Assert.IsTrue(false);
         }
     }
 }
