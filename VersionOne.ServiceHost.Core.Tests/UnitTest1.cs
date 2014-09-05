@@ -12,10 +12,10 @@ namespace VersionOne.ServiceHost.Core.Tests
             Assert.IsTrue(true);
         }
 
-        [TestMethod]
-        public void TestFail()
-        {
-            Assert.IsTrue(false);
-        }
+        //[TestMethod]
+        //public void TestFail()
+        //{
+        //    Assert.IsTrue(false);
+        //}
     }
 }
