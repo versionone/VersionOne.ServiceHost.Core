@@ -19,7 +19,7 @@
         <dependency id="Ninject" version="[3.0.1,4)" />
         <dependency id="VersionOne.SDK.APIClient" version="[12.3.80,13)" />
     </dependencies>
-    <copyright>Copyright 2008-2013</copyright>
-    <tags>V1 VersionOne API apiclient servicehost agile</tags>
+    <copyright>Copyright 2008-2014</copyright>
+    <tags>V1 VersionOne API servicehost agile integration</tags>
   </metadata>
 </package>
