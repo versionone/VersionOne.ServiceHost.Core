@@ -1,5 +1,5 @@
 # VersionOne ServiceHost Core License
-Copyright (c) 2008-2013 VersionOne, Inc.
+Copyright (c) 2008-2014 VersionOne, Inc.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without 

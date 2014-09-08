@@ -1,3 +1,3 @@
 # VersionOne ServiceHost Core
 
-ServiceHost core for integrations
+A common component used by VersionOne ServiceHost-based integrations.

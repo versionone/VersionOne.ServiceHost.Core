@@ -11,7 +11,6 @@ using Newtonsoft.Json.Linq;
 
 namespace VersionOne.ServiceHost.Core.Services 
 {
-
     public class V1Connection
     {
         public readonly IMetaModel Meta;
@@ -36,7 +35,7 @@ namespace VersionOne.ServiceHost.Core.Services
         private const string MemberType = "Member";
         private const string DefaultRoleNameProperty = "DefaultRole.Name";
 
-        //Note that when using OAuth, the client_secrets.json and stored_credentials.json files must exist in the application folder.
+        //Note that when using OAuth, the client_secrets.json and stored_credentials.json files must exist in the application folder. 
         protected virtual V1Connection V1Connection
         {
             get
@@ -53,13 +52,15 @@ namespace VersionOne.ServiceHost.Core.Services
                         if (File.Exists("client_secrets.json") == true)
                         {
                             if (File.Exists("stored_credentials.json") == false)
+                            {
                                 throw new Exception("The stored_credentials.json file was not found.");
+                            }
 
                             string baseUrl = GetBaseURLFromJSONFile("client_secrets.json");
 
-														var metaConnector = new VersionOneAPIConnector(baseUrl + "/meta.v1/").WithOAuth2();
-														var dataConnector = new VersionOneAPIConnector(baseUrl + "/rest-1.oauth.v1/").WithOAuth2();
-														var localConnector = new VersionOneAPIConnector(baseUrl + "/loc.v1/");
+							var metaConnector = new VersionOneAPIConnector(baseUrl + "/meta.v1/").WithOAuth2();
+							var dataConnector = new VersionOneAPIConnector(baseUrl + "/rest-1.oauth.v1/").WithOAuth2();
+							var localConnector = new VersionOneAPIConnector(baseUrl + "/loc.v1/");
 
                             metaService = new VersionOne.SDK.APIClient.MetaModel(metaConnector);
                             dataService = new VersionOne.SDK.APIClient.Services(metaService, dataConnector);
@@ -77,21 +78,22 @@ namespace VersionOne.ServiceHost.Core.Services
                             string password = Config["Settings"].SelectSingleNode("Password").InnerText;
                             bool useIntegratedAuth = Config["Settings"].SelectSingleNode("IntegratedAuth").InnerText == "true" ? true : false;
 
-														var metaConnector = new VersionOneAPIConnector(baseUrl + "meta.v1/");
-														VersionOneAPIConnector dataConnector;
-	                        if (useIntegratedAuth)
-		                        dataConnector =
-			                        new VersionOneAPIConnector(baseUrl + "rest-1.v1/").WithWindowsIntegratedAuthentication();
-	                        else
-		                        dataConnector =
-			                        new VersionOneAPIConnector(baseUrl + "rest-1.v1/").WithVersionOneUsernameAndPassword(
-				                        username, password);
-														var localConnector = new VersionOneAPIConnector(baseUrl + "loc.v1/");
+						    var metaConnector = new VersionOneAPIConnector(baseUrl + "meta.v1/");
+						    VersionOneAPIConnector dataConnector;
 
+                            if (useIntegratedAuth)
+                            {
+                                dataConnector = new VersionOneAPIConnector(baseUrl + "rest-1.v1/").WithWindowsIntegratedAuthentication();
+                            }
+                            else
+                            {
+                                dataConnector = new VersionOneAPIConnector(baseUrl + "rest-1.v1/").WithVersionOneUsernameAndPassword(username, password);
+                            }
+
+                            var localConnector = new VersionOneAPIConnector(baseUrl + "loc.v1/");
                             metaService = new VersionOne.SDK.APIClient.MetaModel(metaConnector);
                             dataService = new VersionOne.SDK.APIClient.Services(metaService, dataConnector);
                             localService = new VersionOne.SDK.APIClient.Localizer(localConnector);
-
                             Logger.LogVersionOneConfiguration(LogMessage.SeverityType.Info, Config["Settings"]);
                         }
 
@@ -151,10 +153,7 @@ namespace VersionOne.ServiceHost.Core.Services
             Logger = new Logger(eventManager);
         }
 
-        public void Start() 
-        {
-            // TODO: Move subscriptions to timer events, etc. here
-        }
+        public void Start() {}
 
         protected abstract IEnumerable<NeededAssetType> NeededAssetTypes { get; }
 
