@@ -51,9 +51,6 @@
     <Reference Include="System.DirectoryServices" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="VersionOne.Parsers">
-      <HintPath>..\packages\VersionOne.Parsers.1.1.0.0\lib\net45\VersionOne.Parsers.dll</HintPath>
-    </Reference>
     <Reference Include="VersionOne.SDK.APIClient">
       <HintPath>..\packages\VersionOne.SDK.APIClient.14.1.1.292\lib\net45\VersionOne.SDK.APIClient.dll</HintPath>
     </Reference>
