@@ -11,9 +11,9 @@
 				"id": "VersionOne.ServiceHost.Core",
 				"product":"VersionOne.ServiceHost.Core",
 				"title":"VersionOne.ServiceHost.Core",
-				"description":"description",
+				"description":"Internal component used by VersionOne ServiceHost.",
 				"company":"VersionOne, Inc.",
-				"copyright":"Copyright 2008-2014, VersionOne, Inc."
+				"copyright":"Copyright 2008-2015, VersionOne, Inc."
 			},
 			{
 				"id": "VersionOne.ServiceHost.Core.Tests",
@@ -21,7 +21,7 @@
 				"title":"VersionOne.ServiceHost.Core.Tests",
 				"description":"description",
 				"company":"VersionOne, Inc.",
-				"copyright":"Copyright 2008-2014, VersionOne, Inc."
+				"copyright":"Copyright 2008-2015, VersionOne, Inc."
 			}
     	]
 }
