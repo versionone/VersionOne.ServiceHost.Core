@@ -5,23 +5,22 @@
     "configuration": "Release",
     "platform": "Any CPU",
     "version": "1.1.0.0",
-    "organizationName": "VersionOne, Inc.",
+    "description":"Internal component used by VersionOne ServiceHost.",
+    "company":"VersionOne, Inc.",
+    "copyright":"Copyright 2008-2015, VersionOne, Inc.",
     "assemblyinfo": [
-			{
-				"id": "VersionOne.ServiceHost.Core",
-				"product":"VersionOne.ServiceHost.Core",
-				"title":"VersionOne.ServiceHost.Core",
-				"description":"Internal component used by VersionOne ServiceHost.",
-				"company":"VersionOne, Inc.",
-				"copyright":"Copyright 2008-2015, VersionOne, Inc."
-			},
-			{
-				"id": "VersionOne.ServiceHost.Core.Tests",
-				"product":"VersionOne.ServiceHost.Core.Tests",
-				"title":"VersionOne.ServiceHost.Core.Tests",
-				"description":"description",
-				"company":"VersionOne, Inc.",
-				"copyright":"Copyright 2008-2015, VersionOne, Inc."
-			}
-    	]
+      {
+        "id": "VersionOne.ServiceHost.Core",
+        "product":"VersionOne.ServiceHost.Core",
+        "title":"VersionOne.ServiceHost.Core"
+      },
+      {
+        "id": "VersionOne.ServiceHost.Core.Tests",
+        "product":"VersionOne.ServiceHost.Core.Tests",
+        "title":"VersionOne.ServiceHost.Core.Tests"
+      }
+      ],
+      "nuspecTokens":{
+        "tags": "VersionOne V1 ServiceHost"
+      }
 }
