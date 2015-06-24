@@ -28,7 +28,7 @@ namespace VersionOne.ServiceHost.Core.Services
                 {
                     try
                     {
-                        var settings = VersionOneSettings.FromXmlElement(Config);
+                        var settings = VersionOneSettings.FromXmlElement(Config["Settings"]);
 
                         var connector = V1Connector
                             .WithInstanceUrl(settings.Url)
@@ -92,10 +92,7 @@ namespace VersionOne.ServiceHost.Core.Services
 
         private string GetLoggedInMemberRole()
         {
-            var query = new Query(Services.LoggedIn);
             var defaultRoleAttribute = Services.Meta.GetAssetType(MemberType).GetAttributeDefinition(DefaultRoleNameProperty);
-            query.Selection.Add(defaultRoleAttribute);
-
             return Services.Localization(defaultRoleAttribute);
         }
 
